@@ -5,6 +5,7 @@ $menu=$_GET['menu'];
 else{
 $menu="";
 }
+
 if($menu=="info_ruangan"){
 	include"info_ruangan.php";
 }
@@ -22,6 +23,12 @@ else if($menu=="panduan"){
 }
 else if($menu=="status"){
 	include"status.php";
+}
+else if($menu=="laporan"){
+	include"laporan.php";
+}
+else if($menu=="login"){
+	include"login.php";
 }
 else{
 	include"home.php";
