@@ -1,11 +1,3 @@
-<?php include 'navbar.php'; ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Laporan Fasilitas</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body style="padding-top:70px;">
 
 <div class="container">
     <h2 class="mb-4">Laporan Fasilitas Rusak</h2>
@@ -41,7 +33,3 @@
         <button class="btn btn-danger w-100">Kirim Laporan</button>
     </form>
 </div>
-
-<?php include 'footer.php'; ?>
-</body>
-</html>
