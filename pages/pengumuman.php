@@ -1,10 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Pengumuman</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
 
 <?php include 'navbar.php'; ?>
 
@@ -18,6 +11,3 @@
         <li class="list-group-item">Laporan fasilitas diproses</li>
     </ul>
 </div>
-
-</body>
-</html>
