@@ -2,7 +2,7 @@
 session_start();
 
 if(!isset($_SESSION['login'])){
-    header("Location: login.php");
+    header("Location: auth/login.php");
     exit();
 }
 ?>
@@ -10,6 +10,7 @@ if(!isset($_SESSION['login'])){
 <!DOCTYPE html>
 <html lang="id">
 <head>
+
 <meta charset="UTF-8">
 <title>Smart Room Monitoring System</title>
 
@@ -19,13 +20,18 @@ if(!isset($_SESSION['login'])){
 
 <body>
 
-<?php include "navbar.php"; ?>
+<!-- NAVBAR -->
+<?php include "includes/navbar.php"; ?>
 
+<!-- CONTENT -->
 <div class="container" style="margin-top:90px;">
-<?php include "menu.php"; ?>
+
+<?php include "includes/menu.php"; ?>
+
 </div>
 
-<?php include "footer.php"; ?>
+<!-- FOOTER -->
+<?php include "includes/footer.php"; ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 
