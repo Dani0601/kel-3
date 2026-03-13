@@ -1,9 +1,20 @@
 <?php
 
 session_start();
-include "config/koneksi.php";
+require_once "../config/koneksi.php";
 
-$username = $_POST['username'];
+/* validasi captcha */
+if($_POST['captcha'] != $_SESSION['captcha']){
+
+    echo "<script>
+    alert('Captcha salah');
+    window.location='login.php';
+    </script>";
+    exit();
+
+}
+
+$username = mysqli_real_escape_string($conn,$_POST['username']);
 $password = md5($_POST['password']);
 
 $query = mysqli_query($conn,"SELECT * FROM users 
@@ -15,8 +26,9 @@ if($data){
 
     $_SESSION['login'] = true;
     $_SESSION['username'] = $data['username'];
+    $_SESSION['role'] = $data['role'];
 
-    header("Location: index.php");
+    header("Location: ../index.php");
     exit();
 
 }else{
