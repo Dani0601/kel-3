@@ -17,7 +17,7 @@ if($_POST['captcha'] != $_SESSION['captcha']){
 $username = mysqli_real_escape_string($conn,$_POST['username']);
 $password = md5($_POST['password']);
 
-$query = mysqli_query($conn,"SELECT * FROM user 
+$query = mysqli_query($conn,"SELECT * FROM users 
 WHERE username='$username' AND password='$password'");
 
 $data = mysqli_fetch_assoc($query);
