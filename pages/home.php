@@ -1,138 +1,86 @@
-<div class="container mt-5">
+<section class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-100 py-20">
 
-<div class="text-center mb-5 hero-title">
-<h1 class="fw-bold">Smart Room Monitoring System</h1>
-<div class="title-line"></div>
+<div class="max-w-6xl mx-auto px-6">
 
-<p class="text-muted">
-Smart Room Monitoring System adalah aplikasi berbasis web untuk
-mengelola jadwal ruangan, menampilkan informasi ruangan,
-serta menyampaikan pengumuman secara digital.
+<!-- HERO -->
+<div class="text-center mb-20">
+
+<h1 class="text-4xl md:text-5xl font-bold text-gray-800 leading-tight">
+Smart Room <span class="text-blue-600">Monitoring System</span>
+</h1>
+
+<div class="w-28 h-1 bg-blue-600 mx-auto mt-6 rounded"></div>
+
+<p class="mt-6 text-gray-500 max-w-2xl mx-auto text-lg">
+Aplikasi berbasis web untuk mengelola jadwal ruangan,
+menampilkan informasi ruangan secara digital,
+serta menyampaikan pengumuman kepada pengguna secara real-time.
 </p>
+
 </div>
 
 
-<div class="row g-4 justify-content-center">
+<!-- FEATURES -->
+<div class="grid md:grid-cols-3 gap-10">
 
-<!-- Card 1 -->
-<div class="col-md-4">
-<div class="card3d">
-<div class="card-body text-center">
-<div class="icon">📅</div>
-<h5 class="fw-bold mt-3">Manajemen Jadwal</h5>
-<p class="text-muted">
+<!-- CARD 1 -->
+<div class="bg-white/80 backdrop-blur-lg rounded-2xl p-8 shadow-lg
+hover:shadow-2xl hover:-translate-y-4 transition duration-300 text-center">
+
+<div class="text-6xl mb-5">📅</div>
+
+<h3 class="text-xl font-semibold text-gray-800 mb-3">
+Manajemen Jadwal
+</h3>
+
+<p class="text-gray-500">
 Mengatur jadwal penggunaan ruangan secara
-terstruktur dan mudah diakses.
+terstruktur sehingga mudah diakses oleh
+mahasiswa maupun dosen.
 </p>
-</div>
-</div>
+
 </div>
 
 
-<!-- Card 2 -->
-<div class="col-md-4">
-<div class="card3d">
-<div class="card-body text-center">
-<div class="icon">📢</div>
-<h5 class="fw-bold mt-3">Pengumuman</h5>
-<p class="text-muted">
-Memberikan informasi penting kepada pengguna
-secara cepat dan efisien.
+<!-- CARD 2 -->
+<div class="bg-white/80 backdrop-blur-lg rounded-2xl p-8 shadow-lg
+hover:shadow-2xl hover:-translate-y-4 transition duration-300 text-center">
+
+<div class="text-6xl mb-5">📢</div>
+
+<h3 class="text-xl font-semibold text-gray-800 mb-3">
+Pengumuman
+</h3>
+
+<p class="text-gray-500">
+Menyampaikan informasi penting secara digital
+agar pengguna dapat mengetahui pengumuman
+dengan cepat dan efisien.
 </p>
-</div>
-</div>
+
 </div>
 
 
-<!-- Card 3 -->
-<div class="col-md-4">
-<div class="card3d">
-<div class="card-body text-center">
-<div class="icon">🏫</div>
-<h5 class="fw-bold mt-3">Informasi Ruangan</h5>
-<p class="text-muted">
-Menampilkan fasilitas dan status ruangan
-secara digital dan real-time.
+<!-- CARD 3 -->
+<div class="bg-white/80 backdrop-blur-lg rounded-2xl p-8 shadow-lg
+hover:shadow-2xl hover:-translate-y-4 transition duration-300 text-center">
+
+<div class="text-6xl mb-5">🏫</div>
+
+<h3 class="text-xl font-semibold text-gray-800 mb-3">
+Informasi Ruangan
+</h3>
+
+<p class="text-gray-500">
+Menampilkan fasilitas, status penggunaan,
+dan detail ruangan secara digital
+dan real-time.
 </p>
-</div>
-</div>
-</div>
 
 </div>
 
 </div>
 
+</div>
 
-<style>
-
-/* background */
-
-body{
-background: linear-gradient(180deg,#f8f9fa,#eef2f7);
-}
-
-
-/* garis dekoratif judul */
-
-.title-line{
-width:80px;
-height:4px;
-background:#0d6efd;
-margin:15px auto 20px auto;
-border-radius:5px;
-}
-
-
-/* CARD 3D */
-
-.card3d{
-background:white;
-border-radius:18px;
-padding:20px;
-position:relative;
-overflow:hidden;
-box-shadow:0 10px 25px rgba(0,0,0,0.08);
-transition:all 0.35s ease;
-transform-style:preserve-3d;
-}
-
-
-/* glow effect */
-
-.card3d::before{
-content:"";
-position:absolute;
-top:-50%;
-left:-50%;
-width:200%;
-height:200%;
-background:radial-gradient(circle, rgba(13,110,253,0.08), transparent 60%);
-opacity:0;
-transition:opacity 0.4s;
-}
-
-.card3d:hover::before{
-opacity:1;
-}
-
-
-/* hover 3D */
-
-.card3d:hover{
-transform: translateY(-10px) scale(1.03) rotateX(5deg) rotateY(5deg);
-box-shadow:0 30px 60px rgba(0,0,0,0.15);
-}
-
-
-/* icon */
-
-.icon{
-font-size:42px;
-transition:transform 0.3s;
-}
-
-.card3d:hover .icon{
-transform:scale(1.2) rotate(5deg);
-}
-
-</style>
+</section>

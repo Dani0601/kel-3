@@ -1,117 +1,123 @@
-<style>
-body{
-    background:#f5f7fb;
-}
+<div class="min-h-screen bg-gray-100 py-16">
 
-.contact-title{
-    font-weight:700;
-    color:#2c3e50;
-}
+<div class="max-w-6xl mx-auto px-6">
 
-.card{
-    border:none;
-    border-radius:15px;
-}
+<!-- Judul -->
+<div class="text-center mb-12">
 
-.card-header{
-    border-radius:15px 15px 0 0 !important;
-    font-weight:600;
-}
+<h2 class="text-3xl font-bold text-gray-800">
+Kontak Admin
+</h2>
 
-.contact-info p{
-    font-size:15px;
-    margin-bottom:15px;
-}
+<div class="w-24 h-1 bg-blue-600 mx-auto mt-3 rounded"></div>
 
-.contact-info i{
-    color:#0d6efd;
-    margin-right:8px;
-}
+<p class="text-gray-500 mt-3">
+Hubungi admin jika mengalami kendala atau ingin memberikan saran
+terhadap sistem Smart Room Monitoring.
+</p>
 
-.form-control{
-    border-radius:8px;
-}
-
-.btn-kirim{
-    border-radius:8px;
-    font-weight:600;
-    transition:0.3s;
-}
-
-.btn-kirim:hover{
-    transform:scale(1.02);
-    box-shadow:0 5px 15px rgba(0,0,0,0.2);
-}
-</style>
+</div>
 
 
-<div class="container" style="margin-top:100px; margin-bottom:60px;">
+<div class="grid md:grid-cols-2 gap-8">
 
-    <h2 class="text-center mb-5 contact-title">Kontak Admin</h2>
+<!-- Informasi Kontak -->
+<div class="bg-white shadow-lg rounded-2xl p-6 hover:shadow-xl transition">
 
-    <div class="row g-4">
+<h3 class="text-xl font-semibold text-blue-600 mb-4">
+Informasi Kontak
+</h3>
 
-        <!-- Informasi Kontak -->
-        <div class="col-md-5">
-            <div class="card shadow-lg">
-                <div class="card-header bg-primary text-white">
-                    Informasi Kontak
-                </div>
-                <div class="card-body contact-info">
+<div class="space-y-4 text-gray-700">
 
-                    <p>
-                        📧 <strong>Email Admin</strong><br>
-                        naulaalfiyatull@gmail.com
-                    </p>
+<div>
+<p class="font-semibold">📧 Email Admin</p>
+<p class="text-gray-600">naulaalfiyatull@gmail.com</p>
+</div>
 
-                    <p>
-                        ⏰ <strong>Jam Operasional</strong><br>
-                        Senin - Jumat (08:00 - 16:00)
-                    </p>
+<div>
+<p class="font-semibold">⏰ Jam Operasional</p>
+<p class="text-gray-600">Senin - Jumat (08:00 - 16:00)</p>
+</div>
 
-                    <p>
-                        📍 <strong>Lokasi</strong><br>
-                        Kampus UIN Siber Syekh Nurjati Cirebon<br>
-                        Gedung Rektorat Lantai 2
-                    </p>
+<div>
+<p class="font-semibold">📍 Lokasi</p>
+<p class="text-gray-600">
+Kampus UIN Siber Syekh Nurjati Cirebon<br>
+Gedung Rektorat Lantai 2
+</p>
+</div>
 
-                </div>
-            </div>
-        </div>
+</div>
+
+</div>
 
 
-        <!-- Form Saran -->
-        <div class="col-md-7">
-            <div class="card shadow-lg">
-                <div class="card-header bg-success text-white">
-                    Form Saran & Masukan
-                </div>
+<!-- Form Saran -->
+<div class="bg-white shadow-lg rounded-2xl p-6 hover:shadow-xl transition">
 
-                <div class="card-body">
+<h3 class="text-xl font-semibold text-green-600 mb-6">
+Form Saran & Masukan
+</h3>
 
-                    <form method="post" action="pages/kirim_pesan.php">
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Nama</label>
-                            <input type="text" name= "nama" class="form-control" placeholder="Masukkan nama anda" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Email</label>
-                            <input type="email" name= "email" class="form-control" placeholder="Masukkan email anda" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Pesan / Saran</label>
-                            <textarea name= "pesan" class="form-control" rows="4" placeholder="Tulis saran atau pertanyaan anda..." required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-success btn-kirim w-100">
-                            Kirim Pesan
-                        </button>
+<form method="post" action="pages/kirim_pesan.php" class="space-y-4">
 
-                    </form>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1">
+Nama
+</label>
 
-                </div>
-            </div>
-        </div>
+<input
+type="text"
+name="nama"
+placeholder="Masukkan nama anda"
+required
+class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none">
+</div>
 
-    </div>
+
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1">
+Email
+</label>
+
+<input
+type="email"
+name="email"
+placeholder="Masukkan email anda"
+required
+class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none">
+</div>
+
+
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1">
+Pesan / Saran
+</label>
+
+<textarea
+name="pesan"
+rows="4"
+placeholder="Tulis saran atau pertanyaan anda..."
+required
+class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"></textarea>
+</div>
+
+
+<button
+type="submit"
+class="w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700 hover:scale-105 transition">
+
+Kirim Pesan
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
