@@ -2,195 +2,157 @@
 $role = $_SESSION['role'] ?? "";
 ?>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-<div class="container">
+<nav class="bg-white shadow-md fixed top-0 w-full z-50" x-data="{open:false}">
+<div class="max-w-7xl mx-auto px-6">
+<div class="flex justify-between items-center h-16">
 
-<a class="navbar-brand" href="index.php">Smart Room</a>
+<!-- LOGO -->
+<a href="index.php" class="text-2xl font-bold text-blue-600">
+Smart Room
+</a>
 
-<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-<span class="navbar-toggler-icon"></span>
-</button>
+<!-- MENU DESKTOP -->
+<div class="hidden md:flex items-center space-x-6">
 
-<div class="collapse navbar-collapse" id="navbarNav">
-
-<ul class="navbar-nav ms-auto">
-
-<!-- BERANDA -->
-<li class="nav-item">
-<a class="nav-link" href="index.php">Beranda</a>
-</li>
-
+<a href="index.php" class="text-gray-700 hover:text-blue-600 font-medium">
+Beranda
+</a>
 
 <!-- MANAJEMEN JADWAL -->
-<li class="nav-item dropdown">
-<a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+<div class="relative" x-data="{dropdown:false}">
+<button @click="dropdown=!dropdown" class="text-gray-700 hover:text-blue-600 font-medium">
 Manajemen Jadwal
-</a>
+</button>
 
-<ul class="dropdown-menu">
+<div x-show="dropdown" @click.outside="dropdown=false"
+class="absolute bg-white shadow-lg rounded-lg mt-2 w-48">
 
-<li>
-<a class="dropdown-item" href="index.php?menu=jadwal">
+<a href="index.php?menu=jadwal" class="block px-4 py-2 hover:bg-gray-100">
 Jadwal
 </a>
-</li>
 
-<li>
-<a class="dropdown-item" href="index.php?menu=status">
+<a href="index.php?menu=status" class="block px-4 py-2 hover:bg-gray-100">
 Status Ruangan
 </a>
-</li>
 
-<li>
-<a class="dropdown-item" href="index.php?menu=info_ruangan">
+<a href="index.php?menu=info_ruangan" class="block px-4 py-2 hover:bg-gray-100">
 Info Ruangan
 </a>
-</li>
 
-</ul>
-</li>
-
+</div>
+</div>
 
 <!-- INFORMASI -->
-<li class="nav-item dropdown">
-<a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+<div class="relative" x-data="{dropdown:false}">
+<button @click="dropdown=!dropdown" class="text-gray-700 hover:text-blue-600 font-medium">
 Informasi
-</a>
+</button>
 
-<ul class="dropdown-menu">
+<div x-show="dropdown" @click.outside="dropdown=false"
+class="absolute bg-white shadow-lg rounded-lg mt-2 w-48">
 
-<li>
-<a class="dropdown-item" href="index.php?menu=pengumuman">
+<a href="index.php?menu=pengumuman" class="block px-4 py-2 hover:bg-gray-100">
 Pengumuman
 </a>
-</li>
 
-<li>
-<a class="dropdown-item" href="index.php?menu=panduan">
+<a href="index.php?menu=panduan" class="block px-4 py-2 hover:bg-gray-100">
 Panduan
 </a>
-</li>
 
-<li>
-<a class="dropdown-item" href="index.php?menu=kontak">
+<a href="index.php?menu=kontak" class="block px-4 py-2 hover:bg-gray-100">
 Kontak
 </a>
-</li>
 
-</ul>
-</li>
+</div>
+</div>
 
-
-<!-- LAPORAN -->
-<li class="nav-item">
-<a class="nav-link" href="index.php?menu=laporan">
-Laporan Fasilitas
+<a href="index.php?menu=laporan" class="text-gray-700 hover:text-blue-600 font-medium">
+Laporan
 </a>
-</li>
-
-
-<!-- ================= ADMIN ================= -->
 
 <?php if($role == "admin"){ ?>
-
-<li class="nav-item dropdown">
-<a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-Kelola Data
-</a>
-
-<ul class="dropdown-menu">
-
-<li>
-<a class="dropdown-item" href="index.php?menu=kelola_ruangan">
-Kelola Ruangan
-</a>
-</li>
-
-<li>
-<a class="dropdown-item" href="index.php?menu=kelola_jadwal">
-Kelola Jadwal
-</a>
-</li>
-
-<li>
-<a class="dropdown-item" href="index.php?menu=kelola_pengumuman">
-Kelola Pengumuman
-</a>
-</li>
-
-<li>
-<a class="dropdown-item" href="index.php?menu=kelola_user">
-Kelola User
-</a>
-</li>
-
-</ul>
-</li>
-
-<?php } ?>
-
-
-<!-- ================= DASHBOARD ROLE ================= -->
-
-<?php if($role == "admin"){ ?>
-
-<li class="nav-item">
-<a class="nav-link" href="index.php?menu=dashboard_admin">
+<a href="index.php?menu=dashboard_admin" class="text-gray-700 hover:text-blue-600 font-medium">
 Dashboard
 </a>
-</li>
-
 <?php } ?>
-
 
 <?php if($role == "dosen"){ ?>
-
-<li class="nav-item">
-<a class="nav-link" href="index.php?menu=dashboard_dosen">
+<a href="index.php?menu=dashboard_dosen" class="text-gray-700 hover:text-blue-600 font-medium">
 Dashboard Dosen
 </a>
-</li>
-
 <?php } ?>
-
 
 <?php if($role == "mahasiswa"){ ?>
-
-<li class="nav-item">
-<a class="nav-link" href="index.php?menu=dashboard_mahasiswa">
+<a href="index.php?menu=dashboard_mahasiswa" class="text-gray-700 hover:text-blue-600 font-medium">
 Dashboard Mahasiswa
 </a>
-</li>
-
 <?php } ?>
 
-
-<!-- ================= USER ================= -->
-
+<!-- USER -->
 <?php if(isset($_SESSION['login'])){ ?>
 
-<li class="nav-item dropdown">
-
-<a class="nav-link dropdown-toggle text-warning" href="#" data-bs-toggle="dropdown">
+<div class="relative" x-data="{dropdown:false}">
+<button @click="dropdown=!dropdown"
+class="text-yellow-500 font-semibold">
 
 <?php echo $_SESSION['username']; ?>
 
+</button>
+
+<div x-show="dropdown" @click.outside="dropdown=false"
+class="absolute right-0 bg-white shadow-lg rounded-lg mt-2 w-40">
+
+<a href="auth/logout.php"
+onclick="return confirm('Yakin ingin logout?')"
+class="block px-4 py-2 text-red-500 hover:bg-gray-100">
+
+Logout
+
 </a>
 
-<ul class="dropdown-menu dropdown-menu-end">
+</div>
 
-<li>
-<a class="nav-link text-danger" href="auth/logout.php" onclick="return confirm('Yakin ingin logout?')">Logout</a>
-</li>
-
-</ul>
-
-</li>
+</div>
 
 <?php } ?>
 
-</ul>
+</div>
+
+<!-- MOBILE BUTTON -->
+<button @click="open=!open" class="md:hidden text-gray-700 text-2xl">
+☰
+</button>
 
 </div>
+
+<!-- MOBILE MENU -->
+<div x-show="open" class="md:hidden pb-4">
+
+<a href="index.php" class="block py-2 text-gray-700">
+Beranda
+</a>
+
+<a href="index.php?menu=jadwal" class="block py-2 text-gray-700">
+Jadwal
+</a>
+
+<a href="index.php?menu=status" class="block py-2 text-gray-700">
+Status Ruangan
+</a>
+
+<a href="index.php?menu=info_ruangan" class="block py-2 text-gray-700">
+Info Ruangan
+</a>
+
+<a href="index.php?menu=pengumuman" class="block py-2 text-gray-700">
+Pengumuman
+</a>
+
+<a href="index.php?menu=laporan" class="block py-2 text-gray-700">
+Laporan
+</a>
+
+</div>
+
 </div>
 </nav>
