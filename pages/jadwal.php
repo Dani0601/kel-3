@@ -71,13 +71,17 @@ $kelas_data   = mysqli_query($conn,"SELECT * FROM kelas");
 
 $hari = ["Senin","Selasa","Rabu","Kamis","Jumat"];
 
-$jam = [
-"07:30:00",
-"09:10:00",
-"10:50:00",
-"13:00:00",
-"14:40:00"
-];
+$jam_query = mysqli_query($conn,"
+SELECT DISTINCT jam_mulai 
+FROM jadwal 
+ORDER BY jam_mulai
+");
+
+$jam = [];
+
+while($j = mysqli_fetch_assoc($jam_query)){
+$jam[] = $j['jam_mulai'];
+}
 ?>
 
 <script src="https://cdn.tailwindcss.com"></script>
