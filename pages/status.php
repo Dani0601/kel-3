@@ -34,11 +34,24 @@ $where
 ORDER BY ruangan.nama_ruangan
 ");
 
-$jamList = [
-"07:00:00","08:00:00","09:00:00","10:00:00",
-"11:00:00","12:00:00","13:00:00","14:00:00",
-"15:00:00","16:00:00","17:00:00"
-];
+$jamList = [];
+
+$start = strtotime("07:30");
+$end = strtotime("18:00");
+
+while($start < $end){
+
+$time = date("H:i:s",$start);
+
+$jamList[] = $time;
+
+$start = strtotime("+50 minutes",$start);
+
+if(date("H:i",$start) == "12:30"){
+$start = strtotime("13:00");
+}
+
+}
 ?>
 
 <div class="max-w-7xl mx-auto px-6 py-10">
