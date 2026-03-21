@@ -54,16 +54,23 @@ $query .= " AND kelas.id_kelas='$kelas'";
 $query .= " ORDER BY jadwal.hari, jadwal.jam_mulai";
 
 $data = mysqli_query($conn,$query);
-
 $jadwal = [];
 
 while($row = mysqli_fetch_assoc($data)){
-
-$key = $row['hari']."_".$row['jam_mulai'];
-
-$jadwal[$key][] = $row;
+    $key = $row['hari']."_".$row['jam_mulai'];
+    $jadwal[$key][] = $row;
 }
 
+$jadwal_per_kelas = [];
+
+foreach($jadwal as $items){
+    foreach($items as $j){
+
+        $key = $j['nama_kelas']." - Semester ".$j['semester'];
+        $jadwal_per_kelas[$key][] = $j;
+
+    }
+}
 $prodi_data   = mysqli_query($conn,"SELECT * FROM prodi");
 $dosen_data   = mysqli_query($conn,"SELECT * FROM dosen");
 $ruangan_data = mysqli_query($conn,"SELECT * FROM ruangan");
@@ -71,24 +78,49 @@ $kelas_data   = mysqli_query($conn,"SELECT * FROM kelas");
 
 $hari = ["Senin","Selasa","Rabu","Kamis","Jumat"];
 
-$jam_query = mysqli_query($conn,"
-SELECT DISTINCT jam_mulai 
-FROM jadwal 
-ORDER BY jam_mulai
-");
+$start = strtotime("07:30");
+$end   = strtotime("18:00");
 
-$jam = [];
+$timeslots = [];
 
-while($j = mysqli_fetch_assoc($jam_query)){
-$jam[] = $j['jam_mulai'];
+while($start < $end){
+
+    $next = strtotime("+50 minutes", $start);
+
+    // skip kalau kena jam istirahat
+    if(
+        date("H:i",$start) < "12:30" && 
+        date("H:i",$next) > "12:30"
+    ){
+        // lompat ke 13:00
+        $start = strtotime("13:00");
+        continue;
+    }
+
+    if(
+        date("H:i",$start) >= "12:30" && 
+        date("H:i",$start) < "13:00"
+    ){
+        $start = strtotime("13:00");
+        continue;
+    }
+
+    $timeslots[] = [
+        'start' => date("H:i",$start),
+        'end'   => date("H:i",$next)
+    ];
+
+    $start = $next;
 }
 ?>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
-table td{
-min-width:180px;
+td, th {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 </style>
 
@@ -212,20 +244,28 @@ class="border rounded-lg p-2 shadow-sm">
 
 <!-- TABEL JADWAL -->
 
+<?php foreach($jadwal_per_kelas as $kelas_nama => $list_jadwal){ ?>
+
+<div class="mb-10">
+
+<h3 class="text-xl font-bold mb-3 text-gray-700">
+Kelas <?= $kelas_nama ?>
+</h3>
+
 <div class="bg-white shadow-lg rounded-xl overflow-x-auto">
 
-<table class="w-full text-sm text-center">
+<table class="w-full table-fixed text-sm text-center border">
 
 <thead class="bg-gray-800 text-white">
 
 <tr>
 
-<th class="p-3">Jam</th>
+<th class="p-2 w-28">Hari</th> <!-- ✅ INI HEADER HARI -->
 
-<?php foreach($hari as $h){ ?>
-
-<th class="p-3"><?= $h ?></th>
-
+<?php foreach($timeslots as $t){ ?>
+<th class="p-2 text-xs w-24">
+<?= $t['start'] ?><br>-<br><?= $t['end'] ?>
+</th>
 <?php } ?>
 
 </tr>
@@ -234,77 +274,74 @@ class="border rounded-lg p-2 shadow-sm">
 
 <tbody>
 
-<?php foreach($jam as $j){ ?>
+<?php foreach($hari as $h){ ?>
 
-<tr class="border-b hover:bg-gray-50">
+<tr class="border-b">
 
-<td class="font-semibold text-gray-700">
-
-<?= date("H:i",strtotime($j)) ?>
-
+<td class="font-semibold bg-gray-100 w-28">
+<?= $h ?>
 </td>
 
-<?php foreach($hari as $h){
-
-$key = $h."_".$j;
-
-?>
-
-<td class="h-32 align-top p-2">
-
 <?php
+$i = 0;
 
-if(isset($jadwal[$key])){
+while($i < count($timeslots)){
 
-foreach($jadwal[$key] as $data){
+$slot = $timeslots[$i];
+$found = false;
+
+foreach($list_jadwal as $data){
+
+if(
+$data['hari'] == $h &&
+date("H:i",strtotime($data['jam_mulai'])) == $slot['start']
+){
+
+// hitung durasi
+$mulai = strtotime($data['jam_mulai']);
+$selesai = strtotime($data['jam_selesai']);
+
+$durasi = ($selesai - $mulai) / (50 * 60); // jumlah sks
 
 ?>
 
-<div class="bg-blue-50 border border-blue-200 rounded-lg p-2 mb-2 hover:bg-blue-100">
+<td colspan="<?= $durasi ?>" class="h-24 border align-top overflow-hidden bg-blue-100 p-2">
 
-<div class="font-semibold text-blue-700 text-sm">
-
+<div class="truncate font-semibold text-blue-700 text-sm">
 <?= $data['nama_mk'] ?>
-
 </div>
 
-<div class="text-gray-700 text-xs">
-
+<div class="text-xs truncate">
 <?= $data['nama_dosen'] ?>
-
 </div>
 
-<div class="text-gray-500 text-xs">
-
+<div class="text-xs text-gray-500 truncate">
 <?= $data['nama_ruangan'] ?>
-
 </div>
 
-<div class="text-gray-400 text-xs">
-
-<?= $data['nama_prodi'] ?> - S<?= $data['semester'] ?>
-
+<div class="text-xs text-purple-600 truncate">
+<?= $data['semester'] ?>
 </div>
-
-<div class="text-purple-600 text-xs font-semibold">
-
-Kelas <?= $data['nama_kelas'] ?>
-
-</div>
-
-</div>
-
-<?php
-
-}
-
-}
-
-?>
 
 </td>
 
-<?php } ?>
+<?php
+
+$i += $durasi;
+$found = true;
+break;
+
+}
+
+}
+
+if(!$found){
+echo '<td class="h-24 border align-top overflow-hidden"></td>';
+$i++;
+}
+
+}
+?>
 
 </tr>
 
@@ -317,3 +354,5 @@ Kelas <?= $data['nama_kelas'] ?>
 </div>
 
 </div>
+
+<?php } ?>
