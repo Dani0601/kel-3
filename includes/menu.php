@@ -37,6 +37,14 @@ switch($menu){
         require_once "pages/kontak.php";
     break;
 
+    case "detail_notif":
+        require_once "pages/detail_notif.php";
+    break;
+
+    case 'notifikasi_user':
+    include "pages/notifikasi_user.php";
+    break;
+
 
     /* ===== LAPORAN ===== */
 
@@ -111,6 +119,16 @@ switch($menu){
 
         if($role == "admin"){
             require_once "admin/kelola_user.php";
+        } else {
+            echo "<div class='alert alert-danger'>Akses ditolak</div>";
+        }
+
+    break;
+
+    case "notifikasi":
+
+        if($role == "admin"){
+            require_once "pages/notifikasi.php";
         } else {
             echo "<div class='alert alert-danger'>Akses ditolak</div>";
         }
