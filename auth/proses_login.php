@@ -27,6 +27,7 @@ if($data){
     $_SESSION['login'] = true;
     $_SESSION['username'] = $data['username'];
     $_SESSION['role'] = $data['role'];
+    $_SESSION['id_user'] = $data['id_user'];
 
     header("Location: ../index.php");
     exit();
