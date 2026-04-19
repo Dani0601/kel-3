@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 28 Mar 2026 pada 18.14
+-- Waktu pembuatan: 19 Apr 2026 pada 11.22
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -177,8 +177,18 @@ CREATE TABLE `laporan_fasilitas` (
   `judul` varchar(100) DEFAULT NULL,
   `deskripsi` text DEFAULT NULL,
   `status` enum('pending','proses','selesai') DEFAULT NULL,
-  `tanggal` datetime DEFAULT NULL
+  `tanggal` datetime DEFAULT NULL,
+  `foto` varchar(255) DEFAULT NULL,
+  `jenis` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `laporan_fasilitas`
+--
+
+INSERT INTO `laporan_fasilitas` (`id_laporan`, `id_user`, `id_ruangan`, `judul`, `deskripsi`, `status`, `tanggal`, `foto`, `jenis`) VALUES
+(1, 3052101, 401, 'Laporan Fasilitas', 'AC - AC mati, pembelajaran jadi terganggu karena mahasiswa kepanasan.', 'pending', '2026-04-19 14:48:54', NULL, NULL),
+(2, 3052101, 407, 'Lainnya', 'speakernya rusakm jdi suaranya tidak terdengar jelas', 'pending', '2026-04-19 16:15:53', '1776590153_bunga.jpeg', 'Lainnya');
 
 -- --------------------------------------------------------
 
@@ -294,13 +304,14 @@ CREATE TABLE `notifikasi` (
 --
 
 INSERT INTO `notifikasi` (`id_notifikasi`, `judul`, `pesan`, `created_at`, `status`) VALUES
-(211, 'trial', 'hai semua', NULL, 'aktif'),
+(211, 'trial', 'hai semua', NULL, 'dihapus'),
 (212, 'trial pt 2', 'hehe', NULL, 'dihapus'),
 (213, 'trial pt 2', 'hehe', NULL, 'dihapus'),
 (214, 'Rapat', 'Dimohon untuk semua dosen untuk berkumpul di audit gedung siber lantai 8', '2026-03-28 23:32:26', 'dihapus'),
 (215, 'Rapat', 'Dimohon untuk semua dosen untuk berkumpul di audit gedung siber lantai 8', '2026-03-28 23:37:14', 'dihapus'),
 (216, 'secreet', 'Untuk mendapatkan IPK yang tinggi, anda harus rajin belajar dan aktif di kelas', '2026-03-28 23:38:26', 'aktif'),
-(217, 'Rapat', 'Dimohon untuk semua dosen untuk berkumpul di audit gedung siber lantai 8', '2026-03-28 23:45:28', 'aktif');
+(217, 'Rapat', 'Dimohon untuk semua dosen untuk berkumpul di audit gedung siber lantai 8', '2026-03-28 23:45:28', 'aktif'),
+(218, 'Laporan terkirim', 'Laporan kamu berhasil dikirim', NULL, 'dihapus');
 
 -- --------------------------------------------------------
 
@@ -356,7 +367,8 @@ INSERT INTO `notifikasi_user` (`id_notifikasi_user`, `id_notifikasi`, `id_user`,
 (34, 217, 1010009, 0),
 (35, 217, 1010010, 0),
 (36, 217, 1010011, 0),
-(37, 217, 1010012, 0);
+(37, 217, 1010012, 0),
+(38, 218, 3052101, 1);
 
 -- --------------------------------------------------------
 
@@ -474,6 +486,7 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id_user`, `username`, `password`, `role`) VALUES
 (122001, 'asteriopratama', '8ec596bb91bab7603ee80ff6abb7adb4', 'admin'),
 (122002, 'adhikapranawa', '531ad33609e0a8c733a939177c371e3c', 'admin'),
+(122003, 'admin', '0192023a7bbd73250516f069df18b500', 'admin'),
 (1010001, 'pradeepawijaya', '54215d57b809f36ba2467bcf2b37b53e', 'dosen'),
 (1010002, 'nayyanaputri', 'a3b71a69faba39b4cf3caa5311da7b30', 'dosen'),
 (1010003, 'adhira', '6e06f0d435cbd35930299a69d5b74b58', 'dosen'),
@@ -486,6 +499,7 @@ INSERT INTO `users` (`id_user`, `username`, `password`, `role`) VALUES
 (1010010, 'citramhrni', '4de704d55168ee62c7a72629ba1c07cc', 'dosen'),
 (1010011, 'fajjar', '68c7b6bd4793f98758cbc9da12110a39', 'dosen'),
 (1010012, 'ayukarrtika', '0f79ec9bb1f34c99afab1b618938a127', 'dosen'),
+(1010013, 'dosen', 'd5bbfb47ac3160c31fa8c247827115aa', 'dosen'),
 (3052101, 'azkaniarahma', '5b55d2e233eeb2b3ece5cabf6d3b7bd7', 'mahasiswa'),
 (3052102, 'ayyaramahesa', 'e8e462fb485482ff6e54817ef3b72099', 'mahasiswa'),
 (3052103, 'nakhlaryani', '2c41c37d694e9cec5247409be8180148', 'mahasiswa'),
@@ -497,7 +511,8 @@ INSERT INTO `users` (`id_user`, `username`, `password`, `role`) VALUES
 (3052109, 'kirana', '26350c8154947cfa99eec36189ba2c33', 'mahasiswa'),
 (3052110, 'kalyanaputri', '60d67ed2bc84b293fd29e02d15d80128', 'mahasiswa'),
 (3052111, 'nayakapradana', '8a547e1b19317f1c7c43de8d563ffe0f', 'mahasiswa'),
-(3052112, 'adhikara', '7b408ab7c1575fb59901418cf6cd54e1', 'mahasiswa');
+(3052112, 'adhikara', '7b408ab7c1575fb59901418cf6cd54e1', 'mahasiswa'),
+(3052113, 'mahasiswa', 'b398b8a18ef4f69811a32cf169946bac', 'mahasiswa');
 
 --
 -- Indexes for dumped tables
@@ -624,16 +639,22 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT untuk tabel `laporan_fasilitas`
+--
+ALTER TABLE `laporan_fasilitas`
+  MODIFY `id_laporan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT untuk tabel `notifikasi`
 --
 ALTER TABLE `notifikasi`
-  MODIFY `id_notifikasi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=218;
+  MODIFY `id_notifikasi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=219;
 
 --
 -- AUTO_INCREMENT untuk tabel `notifikasi_user`
 --
 ALTER TABLE `notifikasi_user`
-  MODIFY `id_notifikasi_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id_notifikasi_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)

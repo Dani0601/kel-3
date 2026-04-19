@@ -42,7 +42,11 @@ switch($menu){
     break;
 
     case 'notifikasi_user':
-    include "pages/notifikasi_user.php";
+        include "pages/notifikasi_user.php";
+    break;
+
+    case "tambah_laporan":
+        require_once "pages/tambah_laporan.php";
     break;
 
 
@@ -128,7 +132,7 @@ switch($menu){
     case "notifikasi":
 
         if($role == "admin"){
-            require_once "pages/notifikasi.php";
+            require_once "admin/notifikasi.php";
         } else {
             echo "<div class='alert alert-danger'>Akses ditolak</div>";
         }
