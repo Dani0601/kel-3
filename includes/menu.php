@@ -117,6 +117,65 @@ case "notifikasi":
 
 break;
 
+case "tambah_jadwal":
+
+    if($role == "admin"){
+        include "admin/tambah_jadwal.php";
+    } else {
+        echo "<div class='text-red-500'>Akses ditolak</div>";
+    }
+
+break;
+
+case "edit_jadwal":
+
+    if($role == "admin"){
+        include "admin/edit_jadwal.php";
+    } else {
+        echo "<div class='text-red-500'>Akses ditolak</div>";
+    }
+
+break;
+
+case "tambah_ruangan":
+
+    if($role == "admin"){
+        include "admin/tambah_ruangan.php";
+    } else {
+        echo "<div class='text-red-500'>Akses ditolak</div>";
+    }
+
+break;
+
+case "edit_ruangan":
+
+    if($role == "admin"){
+        include "admin/edit_ruangan.php";
+    } else {
+        echo "<div class='text-red-500'>Akses ditolak</div>";
+    }
+
+break;
+
+case "tambah_pengumuman":
+
+    if($role == "admin"){
+        include "admin/tambah_pengumuman.php";
+    } else {
+        echo "<div class='text-red-500'>Akses ditolak</div>";
+    }
+
+break;
+
+case "edit_pengumuman":
+
+    if($role == "admin"){
+        include "admin/edit_pengumuman.php";
+    } else {
+        echo "<div class='text-red-500'>Akses ditolak</div>";
+    }
+
+break;
 
 /* ================= DOSEN ================= */
 
