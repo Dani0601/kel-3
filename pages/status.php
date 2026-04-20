@@ -3,7 +3,7 @@ require_once dirname(__DIR__) . "/config/koneksi.php";
 
 date_default_timezone_set("Asia/Jakarta");
 
-$today = date("l");
+/* ================= HARI ================= */
 
 $hariMap = [
 "Monday"=>"Senin",
@@ -15,115 +15,84 @@ $hariMap = [
 "Sunday"=>"Minggu"
 ];
 
-$hari = $hariMap[$today];
+$hari = $hariMap[date("l")];
+$now  = date("H:i");
 
-$selectedGedung = $_GET['gedung'] ?? "";
-
-$where="";
-if($selectedGedung!=""){
-$where="WHERE ruangan.id_gedung='$selectedGedung'";
-}
-
-$gedungQuery = mysqli_query($conn,"SELECT * FROM gedung");
-
-$ruangan = mysqli_query($conn,"
-SELECT ruangan.*, gedung.nama_gedung
-FROM ruangan
-LEFT JOIN gedung ON ruangan.id_gedung = gedung.id_gedung
-$where
-ORDER BY ruangan.nama_ruangan
-");
-
-$jamList = [];
+/* ================= TIMESLOT ================= */
 
 $start = strtotime("07:30");
-$end = strtotime("18:00");
+$end   = strtotime("18:00");
+
+$timeslots = [];
 
 while($start < $end){
 
-$time = date("H:i:s",$start);
+    if(date("H:i",$start) == "12:30"){
+        $start = strtotime("13:00");
+        continue;
+    }
 
-$jamList[] = $time;
+    $next = strtotime("+50 minutes",$start);
 
-$start = strtotime("+50 minutes",$start);
+    $timeslots[] = [
+        'start' => date("H:i",$start),
+        'end'   => date("H:i",$next)
+    ];
 
-if(date("H:i",$start) == "12:30"){
-$start = strtotime("13:00");
+    $start = $next;
 }
 
-}
+/* ================= GEDUNG ================= */
+
+$gedung = mysqli_query($conn,"SELECT * FROM gedung");
+
 ?>
 
-<div class="max-w-7xl mx-auto px-6 py-10">
+<script src="https://cdn.tailwindcss.com"></script>
 
-<!-- Judul -->
-<div class="mb-8 text-center">
+<div class="max-w-7xl mx-auto p-6">
 
-<h2 class="text-3xl font-bold text-gray-800">
-Jadwal Ruangan Hari Ini
+<h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">
+Status Ruangan Hari Ini (<?= $hari ?>)
 </h2>
 
-<p class="text-gray-500 mt-2">
-(<?php echo $hari ?>)
-</p>
-
-<div class="w-20 h-1 bg-blue-600 mx-auto mt-3 rounded"></div>
-
-</div>
-
-
-<!-- Filter -->
-<form method="GET" action="index.php" class="mb-6">
-
-<input type="hidden" name="menu" value="status">
-
-<div class="flex flex-wrap gap-4 justify-center">
-
-<select name="gedung"
-class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
-
-<option value="">Semua Gedung</option>
+<?php while($g = mysqli_fetch_assoc($gedung)){ ?>
 
 <?php
-while($g=mysqli_fetch_assoc($gedungQuery)){
+$id_gedung = $g['id_gedung'];
 
-$sel = ($selectedGedung==$g['id_gedung']) ? "selected":"";
-
-echo "<option value='".$g['id_gedung']."' $sel>".$g['nama_gedung']."</option>";
-
-}
+/* ambil semua ruangan di gedung */
+$ruangan = mysqli_query($conn,"
+SELECT * FROM ruangan 
+WHERE id_gedung='$id_gedung'
+ORDER BY nama_ruangan
+");
 ?>
 
-</select>
+<div class="mb-10">
 
-<button
-class="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition">
+<h3 class="text-xl font-bold mb-3 text-blue-700">
+🏢 <?= $g['nama_gedung'] ?>
+</h3>
 
-Filter
+<div class="bg-white shadow-lg rounded-xl overflow-x-auto">
 
-</button>
-
-</div>
-
-</form>
-
-
-<!-- Table -->
-<div class="overflow-x-auto bg-white shadow rounded-xl">
-
-<table class="min-w-full text-center border-collapse">
+<table class="w-full table-fixed text-sm text-center border">
 
 <thead class="bg-gray-800 text-white">
 
 <tr>
+<th class="p-2 w-32">Ruangan</th>
 
-<th class="p-3">Ruangan</th>
-
-<?php
-foreach($jamList as $jam){
-echo "<th class='p-3'>".substr($jam,0,5)."</th>";
-}
+<?php foreach($timeslots as $t){ 
+$isNow = ($now >= $t['start'] && $now < $t['end']);
 ?>
+
+<th class="p-2 text-xs w-24 <?= $isNow ? 'bg-yellow-400 text-black' : '' ?>">
+<?= $t['start'] ?><br>-<br><?= $t['end'] ?>
+</th>
+
+<?php } ?>
 
 </tr>
 
@@ -131,53 +100,55 @@ echo "<th class='p-3'>".substr($jam,0,5)."</th>";
 
 <tbody>
 
-<?php
+<?php while($r = mysqli_fetch_assoc($ruangan)){ ?>
 
-while($r=mysqli_fetch_assoc($ruangan)){
+<tr class="border-b hover:bg-gray-50">
 
-echo "<tr class='border-b hover:bg-gray-50'>";
+<td class="p-2 font-semibold text-left bg-gray-100">
+<?= $r['nama_ruangan'] ?>
+</td>
 
-echo "<td class='p-3 font-semibold text-left'>
-🏫 ".$r['nama_ruangan']."
-<br>
-<span class='text-sm text-gray-500'>".$r['nama_gedung']."</span>
-</td>";
+<?php foreach($timeslots as $t){ 
 
-foreach($jamList as $jam){
+$isNow = ($now >= $t['start'] && $now < $t['end']);
 
-$q=mysqli_query($conn,"
-SELECT *
-FROM jadwal
+/* cek jadwal */
+$q = mysqli_query($conn,"
+SELECT * FROM jadwal
 WHERE id_ruangan='".$r['id_ruangan']."'
 AND hari='$hari'
-AND '$jam' BETWEEN jam_mulai AND jam_selesai
+AND (
+    TIME('".$t['start']."') >= jam_mulai
+    AND TIME('".$t['start']."') < jam_selesai
+)
 ");
 
-if(mysqli_num_rows($q)>0){
+$dipakai = mysqli_num_rows($q) > 0;
 
-echo "<td class='p-3'>
-<span class='bg-green-500 text-white px-3 py-1 rounded-full text-sm'>
-Dipakai
-</span>
-</td>";
+/* warna */
+$bg = "bg-gray-100";
+$text = "Kosong";
 
-}else{
-
-echo "<td class='p-3'>
-<span class='bg-gray-400 text-white px-3 py-1 rounded-full text-sm'>
-Kosong
-</span>
-</td>";
-
+if($dipakai){
+    $bg = "bg-green-500 text-white";
+    $text = "Dipakai";
 }
 
+/* highlight sekarang */
+if($isNow){
+    $bg = $dipakai ? "bg-yellow-500 text-black" : "bg-yellow-200";
 }
-
-echo "</tr>";
-
-}
-
 ?>
+
+<td class="p-2 text-xs <?= $bg ?>">
+<?= $text ?>
+</td>
+
+<?php } ?>
+
+</tr>
+
+<?php } ?>
 
 </tbody>
 
@@ -186,3 +157,14 @@ echo "</tr>";
 </div>
 
 </div>
+
+<?php } ?>
+
+</div>
+
+<!-- AUTO REFRESH -->
+<script>
+setTimeout(() => {
+    location.reload();
+}, 60000);
+</script>

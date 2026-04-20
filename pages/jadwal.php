@@ -1,11 +1,15 @@
 <?php
 require_once __DIR__ . "/../config/koneksi.php";
 
+date_default_timezone_set("Asia/Jakarta");
+
 $prodi    = $_GET['prodi'] ?? '';
 $semester = $_GET['semester'] ?? '';
 $dosen    = $_GET['dosen'] ?? '';
 $ruangan  = $_GET['ruangan'] ?? '';
 $kelas    = $_GET['kelas'] ?? '';
+
+/* ================= QUERY ================= */
 
 $query = "
 SELECT 
@@ -20,40 +24,27 @@ mk_prodi.semester,
 kelas.nama_kelas
 
 FROM jadwal
-
 JOIN mk_prodi ON jadwal.id_mk_prodi = mk_prodi.id_mk_prodi
 JOIN mata_kuliah ON mk_prodi.id_mk = mata_kuliah.id_mk
 JOIN prodi ON mk_prodi.id_prodi = prodi.id_prodi
 JOIN dosen ON jadwal.id_dosen = dosen.id_dosen
 JOIN ruangan ON jadwal.id_ruangan = ruangan.id_ruangan
 JOIN kelas ON jadwal.id_kelas = kelas.id_kelas
-
 WHERE 1=1
 ";
 
-if($prodi != ''){
-$query .= " AND prodi.id_prodi='$prodi'";
-}
-
-if($semester != ''){
-$query .= " AND mk_prodi.semester='$semester'";
-}
-
-if($dosen != ''){
-$query .= " AND dosen.id_dosen='$dosen'";
-}
-
-if($ruangan != ''){
-$query .= " AND ruangan.id_ruangan='$ruangan'";
-}
-
-if($kelas != ''){
-$query .= " AND kelas.id_kelas='$kelas'";
-}
+if($prodi != '')    $query .= " AND prodi.id_prodi='$prodi'";
+if($semester != '') $query .= " AND mk_prodi.semester='$semester'";
+if($dosen != '')    $query .= " AND dosen.id_dosen='$dosen'";
+if($ruangan != '')  $query .= " AND ruangan.id_ruangan='$ruangan'";
+if($kelas != '')    $query .= " AND kelas.id_kelas='$kelas'";
 
 $query .= " ORDER BY jadwal.hari, jadwal.jam_mulai";
 
 $data = mysqli_query($conn,$query);
+
+/* ================= SUSUN DATA ================= */
+
 $jadwal = [];
 
 while($row = mysqli_fetch_assoc($data)){
@@ -65,18 +56,32 @@ $jadwal_per_kelas = [];
 
 foreach($jadwal as $items){
     foreach($items as $j){
-
-        $key = $j['nama_kelas']." - Semester ".$j['semester'];
-        $jadwal_per_kelas[$key][] = $j;
-
+        $kelas_nama = $j['nama_kelas'];
+        $jadwal_per_kelas[$kelas_nama][] = $j;
     }
 }
+
+/* ================= MASTER DATA ================= */
+
 $prodi_data   = mysqli_query($conn,"SELECT * FROM prodi");
 $dosen_data   = mysqli_query($conn,"SELECT * FROM dosen");
 $ruangan_data = mysqli_query($conn,"SELECT * FROM ruangan");
-$kelas_data   = mysqli_query($conn,"SELECT * FROM kelas");
+
+/* FILTER KELAS DINAMIS */
+if($prodi != ''){
+    $kelas_data = mysqli_query($conn,"
+        SELECT kelas.* 
+        FROM kelas
+        JOIN prodi ON kelas.id_prodi = prodi.id_prodi
+        WHERE prodi.id_prodi='$prodi'
+    ");
+}else{
+    $kelas_data = mysqli_query($conn,"SELECT * FROM kelas");
+}
 
 $hari = ["Senin","Selasa","Rabu","Kamis","Jumat"];
+
+/* ================= TIMESLOT ================= */
 
 $start = strtotime("07:30");
 $end   = strtotime("18:00");
@@ -87,20 +92,8 @@ while($start < $end){
 
     $next = strtotime("+50 minutes", $start);
 
-    // skip kalau kena jam istirahat
-    if(
-        date("H:i",$start) < "12:30" && 
-        date("H:i",$next) > "12:30"
-    ){
-        // lompat ke 13:00
-        $start = strtotime("13:00");
-        continue;
-    }
-
-    if(
-        date("H:i",$start) >= "12:30" && 
-        date("H:i",$start) < "13:00"
-    ){
+    // skip istirahat
+    if(date("H:i",$start) == "12:30"){
         $start = strtotime("13:00");
         continue;
     }
@@ -112,6 +105,11 @@ while($start < $end){
 
     $start = $next;
 }
+
+/* ================= JAM SEKARANG ================= */
+
+$now = date("H:i");
+
 ?>
 
 <script src="https://cdn.tailwindcss.com"></script>
@@ -131,119 +129,63 @@ Jadwal Kuliah
 </h2>
 
 <!-- FILTER -->
-
 <form method="GET" class="mb-6">
-
 <input type="hidden" name="menu" value="jadwal">
 
 <div class="grid md:grid-cols-5 gap-4">
 
-<!-- PRODI -->
-
-<select name="prodi" onchange="this.form.submit()"
-class="border rounded-lg p-2 shadow-sm">
-
+<select name="prodi" onchange="this.form.submit()" class="border rounded-lg p-2">
 <option value="">Semua Prodi</option>
-
 <?php while($p = mysqli_fetch_assoc($prodi_data)){ ?>
-
 <option value="<?= $p['id_prodi'] ?>" <?= ($prodi==$p['id_prodi'])?'selected':'' ?>>
-
 <?= $p['nama_prodi'] ?>
-
 </option>
-
 <?php } ?>
-
 </select>
 
-
-<!-- SEMESTER -->
-
-<select name="semester" onchange="this.form.submit()"
-class="border rounded-lg p-2 shadow-sm">
-
+<select name="semester" onchange="this.form.submit()" class="border rounded-lg p-2">
 <option value="">Semua Semester</option>
-
 <?php for($i=1;$i<=8;$i++){ ?>
-
 <option value="<?= $i ?>" <?= ($semester==$i)?'selected':'' ?>>
-
 Semester <?= $i ?>
-
 </option>
-
 <?php } ?>
-
 </select>
 
-
-<!-- DOSEN -->
-
-<select name="dosen" onchange="this.form.submit()"
-class="border rounded-lg p-2 shadow-sm">
-
+<select name="dosen" onchange="this.form.submit()" class="border rounded-lg p-2">
 <option value="">Semua Dosen</option>
-
 <?php while($d = mysqli_fetch_assoc($dosen_data)){ ?>
-
 <option value="<?= $d['id_dosen'] ?>" <?= ($dosen==$d['id_dosen'])?'selected':'' ?>>
-
 <?= $d['nama_dosen'] ?>
-
 </option>
-
 <?php } ?>
-
 </select>
 
-
-<!-- RUANGAN -->
-
-<select name="ruangan" onchange="this.form.submit()"
-class="border rounded-lg p-2 shadow-sm">
-
+<select name="ruangan" onchange="this.form.submit()" class="border rounded-lg p-2">
 <option value="">Semua Ruangan</option>
-
 <?php while($r = mysqli_fetch_assoc($ruangan_data)){ ?>
-
 <option value="<?= $r['id_ruangan'] ?>" <?= ($ruangan==$r['id_ruangan'])?'selected':'' ?>>
-
 <?= $r['nama_ruangan'] ?>
-
 </option>
-
 <?php } ?>
-
 </select>
 
-
-<!-- KELAS -->
-
-<select name="kelas" onchange="this.form.submit()"
-class="border rounded-lg p-2 shadow-sm">
+<select name="kelas" id="kelasSelect" onchange="this.form.submit()"
+class="border rounded-lg p-2"
+<?= ($prodi==''?'disabled':'') ?>>
 
 <option value="">Semua Kelas</option>
-
 <?php while($k = mysqli_fetch_assoc($kelas_data)){ ?>
-
 <option value="<?= $k['id_kelas'] ?>" <?= ($kelas==$k['id_kelas'])?'selected':'' ?>>
-
 <?= $k['nama_kelas'] ?>
-
 </option>
-
 <?php } ?>
-
 </select>
 
 </div>
-
 </form>
 
-
-<!-- TABEL JADWAL -->
-
+<!-- TABEL -->
 <?php foreach($jadwal_per_kelas as $kelas_nama => $list_jadwal){ ?>
 
 <div class="mb-10">
@@ -257,19 +199,21 @@ Kelas <?= $kelas_nama ?>
 <table class="w-full table-fixed text-sm text-center border">
 
 <thead class="bg-gray-800 text-white">
-
 <tr>
 
-<th class="p-2 w-28">Hari</th> <!-- ✅ INI HEADER HARI -->
+<th class="p-2 w-28">Hari</th>
 
-<?php foreach($timeslots as $t){ ?>
-<th class="p-2 text-xs w-24">
+<?php foreach($timeslots as $t){ 
+$isNow = ($now >= $t['start'] && $now < $t['end']);
+?>
+
+<th class="p-2 text-xs w-24 <?= $isNow ? 'bg-yellow-400 text-black' : '' ?>">
 <?= $t['start'] ?><br>-<br><?= $t['end'] ?>
 </th>
+
 <?php } ?>
 
 </tr>
-
 </thead>
 
 <tbody>
@@ -289,39 +233,48 @@ while($i < count($timeslots)){
 
 $slot = $timeslots[$i];
 $found = false;
+$isNow = ($now >= $slot['start'] && $now < $slot['end']);
 
 foreach($list_jadwal as $data){
 
-if(
-$data['hari'] == $h &&
-date("H:i",strtotime($data['jam_mulai'])) == $slot['start']
-){
-
-// hitung durasi
 $mulai = strtotime($data['jam_mulai']);
 $selesai = strtotime($data['jam_selesai']);
 
-$durasi = ($selesai - $mulai) / (50 * 60); // jumlah sks
+$slot_start = strtotime($slot['start']);
+$slot_end   = strtotime($slot['end']);
 
+if(
+    $data['hari'] == $h &&
+    $mulai >= $slot_start &&
+    $mulai < $slot_end
+){
+
+$durasi = 0;
+
+foreach($timeslots as $ts){
+
+    $ts_start = strtotime($ts['start']);
+    $ts_end   = strtotime($ts['end']);
+
+    // cek overlap
+    if($mulai < $ts_end && $selesai > $ts_start){
+        $durasi++;
+    }
+
+}
+if($durasi == 0) $durasi = 1;
 ?>
 
-<td colspan="<?= $durasi ?>" class="h-24 border align-top overflow-hidden bg-blue-100 p-2">
+<td colspan="<?= $durasi ?>" 
+class="h-24 border p-2 <?= $isNow ? 'bg-yellow-300' : 'bg-blue-100' ?>">
 
-<div class="truncate font-semibold text-blue-700 text-sm">
+<div class="truncate font-semibold text-sm">
 <?= $data['nama_mk'] ?>
 </div>
 
-<div class="text-xs truncate">
-<?= $data['nama_dosen'] ?>
-</div>
-
-<div class="text-xs text-gray-500 truncate">
-<?= $data['nama_ruangan'] ?>
-</div>
-
-<div class="text-xs text-purple-600 truncate">
-<?= $data['semester'] ?>
-</div>
+<div class="text-xs"><?= $data['nama_dosen'] ?></div>
+<div class="text-xs text-gray-500"><?= $data['nama_ruangan'] ?></div>
+<div class="text-xs text-purple-600">S<?= $data['semester'] ?></div>
 
 </td>
 
@@ -336,7 +289,7 @@ break;
 }
 
 if(!$found){
-echo '<td class="h-24 border align-top overflow-hidden"></td>';
+echo '<td class="h-24 border '.($isNow?'bg-yellow-100':'').'"></td>';
 $i++;
 }
 
@@ -356,3 +309,12 @@ $i++;
 </div>
 
 <?php } ?>
+
+</div>
+
+<!-- RESET KELAS SAAT GANTI PRODI -->
+<script>
+document.querySelector('select[name="prodi"]').addEventListener('change', function(){
+    document.getElementById('kelasSelect').value = "";
+});
+</script>
