@@ -1,6 +1,6 @@
 <?php
 include __DIR__ . '/../config/koneksi.php';
-include __DIR__ . '/../includes/navbar.php';
+
 
 $query = mysqli_query($conn, "SELECT * FROM pengumuman ORDER BY tanggal DESC");
 ?>

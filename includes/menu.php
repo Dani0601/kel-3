@@ -1,177 +1,164 @@
 <?php
-
-if(!isset($_SESSION['login'])){
-    header("Location: auth/login.php");
-    exit();
-}
-
-$menu = $_GET['menu'] ?? "";
-$role = $_SESSION['role'] ?? "";
-
-
-/* ===== MENU UMUM ===== */
+$menu = $_GET['menu'] ?? 'home';
+$role = $_SESSION['role'] ?? '';
 
 switch($menu){
 
-    case "info_ruangan":
-        require_once "pages/info_ruangan.php";
-    break;
+/* ================= UMUM ================= */
 
-    case "jadwal":
-        require_once "pages/jadwal.php";
-    break;
+case "home":
+include "pages/home.php";
+break;
 
-    case "status":
-        require_once "pages/status.php";
-    break;
+case "jadwal":
+include "pages/jadwal.php";
+break;
 
-    case "pengumuman":
-        require_once "pages/pengumuman.php";
-    break;
+case "info_ruangan":
+include "pages/info_ruangan.php";
+break;
 
-    case "panduan":
-        require_once "pages/panduan.php";
-    break;
+case "status":
+include "pages/status.php";
+break;
 
-    case "kontak":
-        require_once "pages/kontak.php";
-    break;
+case "pengumuman":
+include "pages/pengumuman.php";
+break;
 
-    case "detail_notif":
-        require_once "pages/detail_notif.php";
-    break;
+case "panduan":
+include "pages/panduan.php";
+break;
 
-    case 'notifikasi_user':
-        include "pages/notifikasi_user.php";
-    break;
-
-    case "tambah_laporan":
-        require_once "pages/tambah_laporan.php";
-    break;
+case "kontak":
+include "pages/kontak.php";
+break;
 
 
-    /* ===== LAPORAN ===== */
+/* ================= LAPORAN ================= */
 
-    case "laporan":
+case "laporan":
 
-        if($role == "admin"){
-            require_once "admin/laporan.php";
-        }
+    if($role == "admin"){
+        include "admin/laporan.php";
+    }
+    elseif($role == "dosen"){
+        include "dosen/laporan.php";
+    }
+    elseif($role == "mahasiswa"){
+        include "mahasiswa/laporan.php";
+    }
+    else{
+        echo "<div class='text-red-500'>Akses ditolak</div>";
+    }
 
-        else if($role == "dosen"){
-            require_once "dosen/laporan.php";
-        }
-
-        else if($role == "mahasiswa"){
-            require_once "mahasiswa/laporan.php";
-        }
-
-        else{
-            echo "<div class='alert alert-danger'>Akses ditolak</div>";
-        }
-
-    break;
+break;
 
 
-    /* ===== ADMIN ===== */
+/* ================= ADMIN ================= */
 
-    case "dashboard_admin":
+case "dashboard_admin":
 
-        if($role == "admin"){
-            require_once "admin/dashboard.php";
-        } else {
-            echo "<div class='alert alert-danger'>Akses ditolak</div>";
-        }
+    if($role == "admin"){
+        include "admin/dashboard.php";
+    } else {
+        echo "<div class='text-red-500'>Akses ditolak</div>";
+    }
 
-    break;
+break;
 
+case "kelola_ruangan":
 
-    case "kelola_ruangan":
+    if($role == "admin"){
+        include "admin/kelola_ruangan.php";
+    } else {
+        echo "<div class='text-red-500'>Akses ditolak</div>";
+    }
 
-        if($role == "admin"){
-            require_once "admin/kelola_ruangan.php";
-        } else {
-            echo "<div class='alert alert-danger'>Akses ditolak</div>";
-        }
+break;
 
-    break;
+case "kelola_jadwal":
 
+    if($role == "admin"){
+        include "admin/kelola_jadwal.php";
+    } else {
+        echo "<div class='text-red-500'>Akses ditolak</div>";
+    }
 
-    case "kelola_jadwal":
+break;
 
-        if($role == "admin"){
-            require_once "admin/kelola_jadwal.php";
-        } else {
-            echo "<div class='alert alert-danger'>Akses ditolak</div>";
-        }
+case "kelola_pengumuman":
 
-    break;
+    if($role == "admin"){
+        include "admin/kelola_pengumuman.php";
+    } else {
+        echo "<div class='text-red-500'>Akses ditolak</div>";
+    }
 
+break;
 
-    case "kelola_pengumuman":
+case "kelola_user":
 
-        if($role == "admin"){
-            require_once "admin/kelola_pengumuman.php";
-        } else {
-            echo "<div class='alert alert-danger'>Akses ditolak</div>";
-        }
+    if($role == "admin"){
+        include "admin/kelola_user.php";
+    } else {
+        echo "<div class='text-red-500'>Akses ditolak</div>";
+    }
 
-    break;
+break;
 
+case "notifikasi":
 
-    case "kelola_user":
+    if($role == "admin"){
+        include "admin/notifikasi.php";
+    } else {
+        echo "<div class='text-red-500'>Akses ditolak</div>";
+    }
 
-        if($role == "admin"){
-            require_once "admin/kelola_user.php";
-        } else {
-            echo "<div class='alert alert-danger'>Akses ditolak</div>";
-        }
-
-    break;
-
-    case "notifikasi":
-
-        if($role == "admin"){
-            require_once "admin/notifikasi.php";
-        } else {
-            echo "<div class='alert alert-danger'>Akses ditolak</div>";
-        }
-
-    break;
+break;
 
 
-    /* ===== DOSEN ===== */
+/* ================= DOSEN ================= */
 
-    case "dashboard_dosen":
+case "dashboard_dosen":
 
-        if($role == "dosen"){
-            require_once "dosen/dashboard.php";
-        } else {
-            echo "<div class='alert alert-danger'>Akses ditolak</div>";
-        }
+    if($role == "dosen"){
+        include "dosen/dashboard.php";
+    } else {
+        echo "<div class='text-red-500'>Akses ditolak</div>";
+    }
 
-    break;
-
-
-    /* ===== MAHASISWA ===== */
-
-    case "dashboard_mahasiswa":
-
-        if($role == "mahasiswa"){
-            require_once "mahasiswa/dashboard.php";
-        } else {
-            echo "<div class='alert alert-danger'>Akses ditolak</div>";
-        }
-
-    break;
+break;
 
 
-    /* ===== DEFAULT ===== */
+/* ================= MAHASISWA ================= */
 
-    default:
-        require_once "pages/home.php";
-    break;
+case "dashboard_mahasiswa":
+
+    if($role == "mahasiswa"){
+        include "mahasiswa/dashboard.php";
+    } else {
+        echo "<div class='text-red-500'>Akses ditolak</div>";
+    }
+
+break;
+
+case "tambah_laporan":
+
+    if($role == "mahasiswa"){
+        include "pages/tambah_laporan.php";
+    } else {
+        echo "<div class='text-red-500'>Akses ditolak</div>";
+    }
+
+break;
+
+
+/* ================= DEFAULT ================= */
+
+default:
+include "pages/home.php";
+break;
 
 }
-
 ?>
