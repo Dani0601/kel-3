@@ -94,7 +94,7 @@ Laporan
 <?php if($role == "admin"){ ?>
 <a href="index.php?menu=dashboard_admin"
 class="text-gray-700 hover:text-blue-600 font-medium transition">
-Dashboard
+Dashboard Admin
 </a>
 <?php } ?>
 

@@ -30,7 +30,13 @@ body{ font-family:'Poppins',sans-serif; }
 
 <body class="bg-gray-100">
 
-<?php include "includes/navbar.php"; ?>
+<?php 
+$role = $_SESSION['role'] ?? '';
+
+if($role != 'admin'){
+    include "includes/navbar.php";
+}
+?>
 
 <?php
 $role = $_SESSION['role'] ?? '';

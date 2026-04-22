@@ -3,16 +3,17 @@ $menu = $_GET['menu'] ?? '';
 $role = $_SESSION['role'] ?? '';
 ?>
 
-<div class="w-64 bg-white border-r fixed left-0 top-16 bottom-0">
+<div class="w-64 bg-white border-r fixed left-0 top-0 bottom-0 flex flex-col">
 
-    <!-- TITLE -->
-    <div class="p-4 text-center text-xl font-semibold text-blue-600 border-b">
-        Kelola
+    <!-- 🔵 LOGO -->
+    <div class="p-4 text-center text-2xl font-bold text-blue-600 border-b">
+        Smart Room
     </div>
 
-    <!-- MENU -->
-    <nav class="p-4 space-y-2 text-sm">
+    <!-- 🔹 MENU -->
+    <nav class="flex-1 p-4 space-y-2 text-sm">
 
+        <!-- ADMIN -->
         <?php if($role == 'admin'): ?>
 
         <a href="?menu=dashboard_admin"
@@ -45,9 +46,14 @@ $role = $_SESSION['role'] ?? '';
         Laporan
         </a>
 
+        <a href="?menu=notifikasi"
+        class="block px-4 py-2 rounded-lg <?= $menu=='notifikasi'?'bg-blue-500 text-white':'' ?> hover:bg-blue-500 hover:text-white">
+        Notifikasi
+        </a>
+
         <?php endif; ?>
 
-
+        <!-- DOSEN -->
         <?php if($role == 'dosen'): ?>
 
         <a href="?menu=dashboard_dosen"
@@ -62,7 +68,7 @@ $role = $_SESSION['role'] ?? '';
 
         <?php endif; ?>
 
-
+        <!-- MAHASISWA -->
         <?php if($role == 'mahasiswa'): ?>
 
         <a href="?menu=dashboard_mahasiswa"
@@ -77,14 +83,17 @@ $role = $_SESSION['role'] ?? '';
 
         <?php endif; ?>
 
-        <hr class="my-3">
+    </nav>
+
+    <!-- 🔻 LOGOUT -->
+    <div class="p-4 border-t">
 
         <a href="auth/logout.php"
-        onclick="return confirm('Yakin logout?')"
-        class="block px-4 py-2 text-red-500 hover:bg-red-500 hover:text-white rounded-lg">
+        onclick="return confirm('Yakin ingin logout?')"
+        class="block text-center bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition">
         Logout
         </a>
 
-    </nav>
+    </div>
 
 </div>
