@@ -1,251 +1,207 @@
 <?php
-require_once dirname(__DIR__) . "/config/koneksi.php";
+include __DIR__ . '/../config/koneksi.php';
 
-date_default_timezone_set("Asia/Jakarta");
+# ========================
+# TOTAL DATA
+# ========================
+$ruangan = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as t FROM ruangan"))['t'];
+$jadwal  = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as t FROM jadwal"))['t'];
+$user    = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as t FROM users"))['t'];
 
-/* HARI */
-$hariMap = [
-"Monday"=>"Senin","Tuesday"=>"Selasa","Wednesday"=>"Rabu",
-"Thursday"=>"Kamis","Friday"=>"Jumat","Saturday"=>"Sabtu","Sunday"=>"Minggu"
-];
+# ========================
+# CHART 1: PER HARI (FIX URUTAN)
+# ========================
+$q1 = mysqli_query($conn,"
+SELECT hari, COUNT(*) as total 
+FROM jadwal 
+GROUP BY hari
+ORDER BY FIELD(hari,'Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu')
+");
 
-$hari = $hariMap[date("l")];
-$now  = date("H:i");
+$hari = [];
+$total_hari = [];
 
-/* TIMESLOT */
-$start = strtotime("07:30");
-$end   = strtotime("18:00");
-
-$timeslots = [];
-
-while($start < $end){
-
-    if(date("H:i",$start) == "12:30"){
-        $start = strtotime("13:00");
-        continue;
-    }
-
-    $next = strtotime("+50 minutes",$start);
-
-    $timeslots[] = [
-        'start'=>date("H:i",$start),
-        'end'=>date("H:i",$next)
-    ];
-
-    $start = $next;
+while ($d = mysqli_fetch_assoc($q1)) {
+    $hari[] = $d['hari'];
+    $total_hari[] = $d['total'];
 }
 
-/* GEDUNG */
-$gedung = mysqli_query($conn,"SELECT * FROM gedung");
+# ========================
+# CHART 2: PER RUANGAN
+# ========================
+$q2 = mysqli_query($conn,"
+SELECT r.nama_ruangan, COUNT(*) as total
+FROM jadwal j
+JOIN ruangan r ON j.id_ruangan = r.id_ruangan
+GROUP BY j.id_ruangan
+");
+
+$ruang = [];
+$total_ruang = [];
+
+while ($d = mysqli_fetch_assoc($q2)) {
+    $ruang[] = $d['nama_ruangan'];
+    $total_ruang[] = $d['total'];
+}
+
+# ========================
+# CHART 3: JAM SIBUK
+# ========================
+$q3 = mysqli_query($conn,"
+SELECT jam_mulai, COUNT(*) as total 
+FROM jadwal 
+GROUP BY jam_mulai
+ORDER BY jam_mulai
+");
+
+$jam = [];
+$total_jam = [];
+
+while ($d = mysqli_fetch_assoc($q3)) {
+    $jam[] = $d['jam_mulai'];
+    $total_jam[] = $d['total'];
+}
+
+# ========================
+# CHART 4: TOP RUANGAN
+# ========================
+$q4 = mysqli_query($conn,"
+SELECT r.nama_ruangan, COUNT(*) as total
+FROM jadwal j
+JOIN ruangan r ON j.id_ruangan = r.id_ruangan
+GROUP BY j.id_ruangan
+ORDER BY total DESC
+LIMIT 5
+");
+
+$top_ruang = [];
+$total_top = [];
+
+while ($d = mysqli_fetch_assoc($q4)) {
+    $top_ruang[] = $d['nama_ruangan'];
+    $total_top[] = $d['total'];
+}
 ?>
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard Admin</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<div class="max-w-7xl mx-auto p-6 space-y-6">
+</head>
 
-<h2 class="text-3xl font-bold text-gray-800 text-center">
-📊 Status Ruangan (<?= $hari ?>)
-</h2>
+<body class="bg-gray-100">
 
-<!-- FILTER -->
-<div class="bg-white p-4 rounded-xl shadow flex flex-wrap gap-3 items-center">
+<div class="p-6">
 
-<select id="filterGedung" class="border p-2 rounded-lg">
-<option value="">Semua Gedung</option>
-<?php 
-mysqli_data_seek($gedung,0);
-while($g = mysqli_fetch_assoc($gedung)){ ?>
-<option value="<?= $g['id_gedung'] ?>">
-<?= $g['nama_gedung'] ?>
-</option>
-<?php } ?>
-</select>
-
-<select id="filterLantai" class="border p-2 rounded-lg">
-<option value="">Semua Lantai</option>
-<?php for($i=1;$i<=10;$i++){ ?>
-<option value="<?= $i ?>">Lantai <?= $i ?></option>
-<?php } ?>
-</select>
-
-<input type="text" id="search"
-placeholder="🔍 Cari ruangan..."
-class="border p-2 rounded-lg w-60">
-
-<select id="show" class="border p-2 rounded-lg">
-<option value="5">5</option>
-<option value="10" selected>10</option>
-<option value="20">20</option>
-</select>
-
+<!-- HEADER -->
+<div class="mb-6">
+<h2 class="text-2xl font-bold text-gray-800">Dashboard Admin</h2>
+<p class="text-sm text-gray-500">Statistik penggunaan ruangan</p>
 </div>
 
-<?php 
-mysqli_data_seek($gedung,0);
-while($g = mysqli_fetch_assoc($gedung)){ 
-$id_gedung = $g['id_gedung'];
+<!-- CARD -->
+<div class="grid md:grid-cols-3 gap-6">
 
-$ruangan = mysqli_query($conn,"
-SELECT * FROM ruangan 
-WHERE id_gedung='$id_gedung'
-ORDER BY lantai, nama_ruangan
-");
-?>
+<div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-5 rounded-xl shadow-lg">
+    <p>Total Ruangan</p>
+    <h2 class="text-3xl font-bold"><?= $ruangan ?></h2>
+</div>
 
-<div class="gedungBox mb-8" data-gedung="<?= $id_gedung ?>">
+<div class="bg-gradient-to-r from-green-500 to-green-600 text-white p-5 rounded-xl shadow-lg">
+    <p>Total Jadwal</p>
+    <h2 class="text-3xl font-bold"><?= $jadwal ?></h2>
+</div>
 
-<h3 class="text-xl font-bold mb-2 text-blue-600 flex items-center gap-2">
-🏢 <?= $g['nama_gedung'] ?>
-</h3>
-
-<div class="bg-white shadow rounded-xl overflow-x-auto border">
-
-<table class="w-full text-sm text-center">
-
-<thead class="bg-gray-900 text-white sticky top-0 z-10">
-
-<tr>
-<th class="p-3 text-left w-40">Ruangan</th>
-<th class="p-3 w-16">Lt</th>
-
-<?php foreach($timeslots as $t){
-$isNow = ($now >= $t['start'] && $now < $t['end']);
-?>
-
-<th class="p-2 text-xs <?= $isNow?'bg-yellow-400 text-black':'' ?>">
-<?= $t['start'] ?><br><?= $t['end'] ?>
-</th>
-
-<?php } ?>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-<?php while($r = mysqli_fetch_assoc($ruangan)){ ?>
-
-<tr class="rowData border-b hover:bg-gray-50 transition"
-data-lantai="<?= $r['lantai'] ?>"
-data-nama="<?= strtolower($r['nama_ruangan']) ?>">
-
-<td class="p-2 text-left font-semibold bg-gray-50">
-<?= $r['nama_ruangan'] ?>
-</td>
-
-<td>
-<span class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs">
-<?= $r['lantai'] ?>
-</span>
-</td>
-
-<?php foreach($timeslots as $t){
-
-$isNow = ($now >= $t['start'] && $now < $t['end']);
-
-$q = mysqli_query($conn,"
-SELECT * FROM jadwal
-WHERE id_ruangan='".$r['id_ruangan']."'
-AND hari='$hari'
-AND TIME('".$t['start']."') >= jam_mulai
-AND TIME('".$t['start']."') < jam_selesai
-");
-
-$dipakai = mysqli_num_rows($q) > 0;
-
-$bg = $dipakai 
-    ? "bg-green-500 text-white" 
-    : "bg-gray-100";
-
-if($isNow){
-    $bg = $dipakai 
-        ? "bg-yellow-500 text-black" 
-        : "bg-yellow-200";
-}
-?>
-
-<td class="p-2 text-xs <?= $bg ?> rounded">
-<?= $dipakai ? "Dipakai" : "Kosong" ?>
-</td>
-
-<?php } ?>
-
-</tr>
-
-<?php } ?>
-
-</tbody>
-
-</table>
-
+<div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-5 rounded-xl shadow-lg">
+    <p>Total User</p>
+    <h2 class="text-3xl font-bold"><?= $user ?></h2>
 </div>
 
 </div>
 
-<?php } ?>
+<!-- CHART -->
+<div class="grid md:grid-cols-2 gap-6 mt-8">
+
+<!-- PER HARI -->
+<div class="bg-white p-5 rounded-xl shadow">
+<h4 class="font-semibold mb-4 text-gray-700">Jadwal per Hari</h4>
+<canvas id="chartHari"></canvas>
+</div>
+
+<!-- PER RUANGAN -->
+<div class="bg-white p-5 rounded-xl shadow">
+<h4 class="font-semibold mb-4 text-gray-700">Penggunaan Ruangan</h4>
+<canvas id="chartRuangan"></canvas>
+</div>
+
+<!-- JAM SIBUK -->
+<div class="bg-white p-5 rounded-xl shadow">
+<h4 class="font-semibold mb-4 text-gray-700">Jam Sibuk</h4>
+<canvas id="chartJam"></canvas>
+</div>
+
+<!-- TOP RUANGAN -->
+<div class="bg-white p-5 rounded-xl shadow">
+<h4 class="font-semibold mb-4 text-gray-700">Top 5 Ruangan Terpadat</h4>
+<canvas id="chartTop"></canvas>
+</div>
+
+</div>
 
 </div>
 
 <script>
-const fGedung = document.getElementById("filterGedung");
-const fLantai = document.getElementById("filterLantai");
-const search = document.getElementById("search");
-const show = document.getElementById("show");
-
-function applyFilter(){
-
-let g = fGedung.value;
-let l = fLantai.value;
-let s = search.value.toLowerCase();
-let limit = parseInt(show.value);
-
-document.querySelectorAll(".gedungBox").forEach(box=>{
-
-let idGedung = box.dataset.gedung;
-
-/* filter gedung */
-if(g && g != idGedung){
-    box.style.display="none";
-    return;
-}else{
-    box.style.display="";
-}
-
-let rows = box.querySelectorAll(".rowData");
-let visible = [];
-
-rows.forEach(r=>{
-let matchLantai = !l || r.dataset.lantai == l;
-let matchSearch = r.dataset.nama.includes(s);
-
-if(matchLantai && matchSearch){
-    visible.push(r);
+new Chart(document.getElementById('chartHari'), {
+type: 'bar',
+data: {
+labels: <?= json_encode($hari); ?>,
+datasets: [{
+label: 'Jumlah Jadwal',
+data: <?= json_encode($total_hari); ?>,
+borderRadius: 6
+}]
+},
+options: {
+plugins: { legend: { display: false }},
+scales: { y: { beginAtZero: true }}
 }
 });
 
-/* tampilkan sesuai limit */
-rows.forEach(r=>r.style.display="none");
-
-visible.forEach((r,i)=>{
-if(i < limit){
-    r.style.display="";
+new Chart(document.getElementById('chartRuangan'), {
+type: 'pie',
+data: {
+labels: <?= json_encode($ruang); ?>,
+datasets: [{
+data: <?= json_encode($total_ruang); ?>
+}]
 }
 });
 
+new Chart(document.getElementById('chartJam'), {
+type: 'line',
+data: {
+labels: <?= json_encode($jam); ?>,
+datasets: [{
+data: <?= json_encode($total_jam); ?>
+}]
+}
 });
 
+new Chart(document.getElementById('chartTop'), {
+type: 'bar',
+data: {
+labels: <?= json_encode($top_ruang); ?>,
+datasets: [{
+data: <?= json_encode($total_top); ?>
+}]
 }
-
-fGedung.onchange = applyFilter;
-fLantai.onchange = applyFilter;
-search.onkeyup = applyFilter;
-show.onchange = applyFilter;
-
-applyFilter();
+});
 </script>
 
-<!-- AUTO REFRESH -->
-<script>
-setTimeout(()=>location.reload(),60000);
-</script>
+</body>
+</html>
