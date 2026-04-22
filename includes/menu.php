@@ -34,6 +34,10 @@ case "kontak":
 include "pages/kontak.php";
 break;
 
+    case "proses_laporan":
+        require_once "pages/proses_laporan.php";
+    break;
+
 
 /* ================= LAPORAN ================= */
 
@@ -42,16 +46,15 @@ case "laporan":
     if($role == "admin"){
         include "admin/laporan.php";
     }
-    elseif($role == "dosen"){
-        include "dosen/laporan.php";
+    else if($role == "dosen"){
+        require_once "pages/laporan.php";
     }
-    elseif($role == "mahasiswa"){
-        include "mahasiswa/laporan.php";
+    else if($role == "mahasiswa"){
+        require_once "pages/laporan.php";
     }
     else{
-        echo "<div class='text-red-500'>Akses ditolak</div>";
+        echo "<div class='alert alert-danger'>Akses ditolak</div>";
     }
-
 break;
 
 
@@ -108,11 +111,19 @@ case "kelola_user":
 break;
 
 case "notifikasi":
+case "notifikasi_user":
 
     if($role == "admin"){
         include "admin/notifikasi.php";
-    } else {
-        echo "<div class='text-red-500'>Akses ditolak</div>";
+    }
+    else if($role == "dosen"){
+        require_once "pages/notifikasi_user.php";
+    }
+    else if($role == "mahasiswa"){
+        require_once "pages/notifikasi_user.php";
+    }
+    else{
+        echo "<div class='alert alert-danger'>Akses ditolak</div>";
     }
 
 break;
@@ -176,6 +187,7 @@ case "edit_pengumuman":
     }
 
 break;
+
 case "tambah_gedung":
 
     if($role == "admin"){
@@ -185,6 +197,27 @@ case "tambah_gedung":
     }
 
 break;
+
+case "edit_laporan":
+
+    if($role == "admin"){
+        include "admin/edit_laporan.php";
+    } else {
+        echo "<div class='text-red-500'>Akses ditolak</div>";
+    }
+
+break;
+
+case "detail_laporan":
+
+    if($role == "admin"){
+        include "admin/detail_laporan.php";
+    } else {
+        echo "<div class='text-red-500'>Akses ditolak</div>";
+    }
+
+break;
+
 /* ================= DOSEN ================= */
 
 case "dashboard_dosen":

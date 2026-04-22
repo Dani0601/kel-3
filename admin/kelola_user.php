@@ -1,5 +1,5 @@
 <?php
-include "../config/koneksi.php";
+include "config/koneksi.php";
 
 // PROTEKSI ADMIN
 if(!isset($_SESSION['login']) || $_SESSION['role'] != 'admin'){
