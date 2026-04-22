@@ -48,7 +48,42 @@ $role = $_SESSION['role'] ?? '';
         <?php endif; ?>
 
 
-       
+        <?php if($role == 'dosen'): ?>
+
+        <a href="?menu=dashboard_dosen"
+        class="block px-4 py-2 rounded-lg <?= $menu=='dashboard_dosen'?'bg-blue-500 text-white':'' ?> hover:bg-blue-500 hover:text-white">
+        Dashboard
+        </a>
+
+        <a href="?menu=laporan"
+        class="block px-4 py-2 rounded-lg <?= $menu=='laporan'?'bg-blue-500 text-white':'' ?> hover:bg-blue-500 hover:text-white">
+        Laporan
+        </a>
+
+        <?php endif; ?>
+
+
+        <?php if($role == 'mahasiswa'): ?>
+
+        <a href="?menu=dashboard_mahasiswa"
+        class="block px-4 py-2 rounded-lg <?= $menu=='dashboard_mahasiswa'?'bg-blue-500 text-white':'' ?> hover:bg-blue-500 hover:text-white">
+        Dashboard
+        </a>
+
+        <a href="?menu=tambah_laporan"
+        class="block px-4 py-2 rounded-lg <?= $menu=='tambah_laporan'?'bg-blue-500 text-white':'' ?> hover:bg-blue-500 hover:text-white">
+        Tambah Laporan
+        </a>
+
+        <?php endif; ?>
+
+        <hr class="my-3">
+
+        <a href="auth/logout.php"
+        onclick="return confirm('Yakin logout?')"
+        class="block px-4 py-2 text-red-500 hover:bg-red-500 hover:text-white rounded-lg">
+        Logout
+        </a>
 
     </nav>
 

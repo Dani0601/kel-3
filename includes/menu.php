@@ -176,7 +176,15 @@ case "edit_pengumuman":
     }
 
 break;
+case "tambah_gedung":
 
+    if($role == "admin"){
+        include "admin/tambah_gedung.php";
+    } else {
+        echo "<div class='text-red-500'>Akses ditolak</div>";
+    }
+
+break;
 /* ================= DOSEN ================= */
 
 case "dashboard_dosen":
