@@ -116,18 +116,20 @@ class="text-red-500">Hapus</a>
             <input type="hidden" name="id_laporan" id="edit_id">
 
             <!-- JUDUL -->
-            <div class="mb-3">
-                <label class="block text-sm">Judul</label>
-                <input type="text" name="judul" id="edit_judul"
-                class="w-full border px-3 py-2 rounded-lg">
-            </div>
+<div class="mb-3">
+    <label class="block text-sm">Judul</label>
+    <input type="text" name="judul" id="edit_judul"
+    class="w-full border px-3 py-2 rounded-lg bg-gray-100 cursor-not-allowed"
+    readonly>
+</div>
 
-            <!-- DESKRIPSI -->
-            <div class="mb-3">
-                <label class="block text-sm">Deskripsi</label>
-                <textarea name="deskripsi" id="edit_deskripsi"
-                class="w-full border px-3 py-2 rounded-lg"></textarea>
-            </div>
+<!-- DESKRIPSI -->
+<div class="mb-3">
+    <label class="block text-sm">Deskripsi</label>
+    <textarea name="deskripsi" id="edit_deskripsi"
+    class="w-full border px-3 py-2 rounded-lg bg-gray-100 cursor-not-allowed"
+    readonly></textarea>
+</div>
 
             <!-- STATUS -->
             <div class="mb-4">
