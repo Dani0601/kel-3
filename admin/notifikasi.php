@@ -16,6 +16,43 @@ if(isset($_GET['hapus'])){
         location='index.php?menu=notifikasi';
     </script>";
 }
+
+/* =========================
+   PAGINATION SETTING
+========================= */
+$limit = 5; // jumlah data per halaman
+$page  = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$start = ($page - 1) * $limit;
+
+/* =========================
+   SEARCH
+========================= */
+$cari = $_GET['cari'] ?? '';
+$cari_safe = mysqli_real_escape_string($conn, $cari);
+
+/* =========================
+   QUERY DATA
+========================= */
+$sql = "
+SELECT * FROM notifikasi 
+WHERE 1=1
+";
+
+if($cari != ''){
+    $sql .= " AND (judul LIKE '%$cari_safe%' OR pesan LIKE '%$cari_safe%')";
+}
+
+$sql_count = $sql; // untuk hitung total data
+$sql .= " ORDER BY id_notifikasi DESC LIMIT $start, $limit";
+
+$data = $conn->query($sql);
+
+/* =========================
+   TOTAL PAGINATION
+========================= */
+$total_data = $conn->query($sql_count)->num_rows;
+$total_page = ceil($total_data / $limit);
+
 ?>
 
 <div class="max-w-4xl mx-auto mt-6">
@@ -28,11 +65,11 @@ if(isset($_GET['hapus'])){
 <form method="POST">
 
     <input type="text" name="judul"
-    class="w-full border rounded-lg px-3 py-2 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
+    class="w-full border rounded-lg px-3 py-2 mb-3"
     placeholder="Judul" required>
 
     <textarea name="pesan"
-    class="w-full border rounded-lg px-3 py-2 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
+    class="w-full border rounded-lg px-3 py-2 mb-3"
     placeholder="Pesan" required></textarea>
 
     <select name="target"
@@ -43,7 +80,7 @@ if(isset($_GET['hapus'])){
     </select>
 
     <button name="kirim"
-    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+    class="bg-blue-600 text-white px-4 py-2 rounded-lg">
     Kirim
     </button>
 
@@ -52,39 +89,55 @@ if(isset($_GET['hapus'])){
 <?php
 if(isset($_POST['kirim'])){
     tambah_notifikasi($conn, $_POST['judul'], $_POST['pesan'], $_POST['target']);
-    echo "<div class='mt-3 p-2 bg-green-100 text-green-700 rounded'>Notifikasi terkirim</div>";
+    echo "<div class='mt-3 p-2 bg-green-100 text-green-700 rounded'>
+        Notifikasi terkirim
+    </div>";
 }
 ?>
 
 </div>
 
-<!-- RIWAYAT -->
+<!-- SEARCH -->
+<form method="GET" class="mb-4 flex gap-2">
+    <input type="hidden" name="menu" value="notifikasi">
+
+    <input type="text" name="cari"
+        placeholder="Cari judul atau pesan..."
+        value="<?= htmlspecialchars($cari) ?>"
+        class="border p-2 rounded w-full">
+
+    <button class="bg-green-500 text-white px-4 py-2 rounded">
+        Cari
+    </button>
+
+    <a href="index.php?menu=notifikasi"
+       class="bg-gray-400 text-white px-4 py-2 rounded">
+       Reset
+    </a>
+</form>
+
+<!-- LIST -->
 <div class="bg-white shadow-md rounded-xl p-6">
 
 <h4 class="text-lg font-semibold mb-4">Riwayat Notifikasi</h4>
 
-<?php
-$data = $conn->query("SELECT * FROM notifikasi ORDER BY id_notifikasi DESC");?>
+<?php if($data && $data->num_rows > 0){ ?>
 
 <div class="space-y-4">
 
 <?php while($d = $data->fetch_assoc()): ?>
 
-<div class="bg-white border border-gray-200 rounded-xl shadow-sm p-5 hover:shadow-md transition">
+<div class="border rounded-xl p-5">
 
-    <!-- HEADER -->
-    <div class="flex justify-between items-start">
+    <div class="flex justify-between">
 
         <div>
-            <h3 class="text-lg font-semibold text-gray-800">
-                <?= $d['judul'] ?>
-            </h3>
-            <p class="text-sm text-gray-600 mt-1">
+            <h3 class="font-semibold"><?= $d['judul'] ?></h3>
+            <p class="text-sm text-gray-600">
                 <?= $d['pesan'] ?>
             </p>
         </div>
 
-        <!-- STATUS -->
         <?php if($d['status'] == 'aktif'): ?>
             <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full">
                 Aktif
@@ -97,28 +150,34 @@ $data = $conn->query("SELECT * FROM notifikasi ORDER BY id_notifikasi DESC");?>
 
     </div>
 
-    <!-- FOOTER -->
-    <div class="flex justify-between items-center mt-4">
-
-        <span class="text-xs text-gray-400">
-            ID: <?= $d['id_notifikasi'] ?>
-        </span>
-
-        <?php if($d['status'] == 'aktif'): ?>
-        <a href="index.php?menu=notifikasi&hapus=<?= $d['id_notifikasi'] ?>"
-           onclick="return confirm('Hapus notifikasi ini?')"
-           class="bg-red-500 hover:bg-red-600 text-white text-sm px-4 py-2 rounded-lg transition">
-            Hapus
-        </a>
-        <?php endif; ?>
-
-    </div>
-
 </div>
 
 <?php endwhile; ?>
 
 </div>
+
+<!-- ================= PAGINATION ================= -->
+<div class="flex justify-center mt-6 space-x-2">
+
+<?php for($i = 1; $i <= $total_page; $i++): ?>
+
+<a href="index.php?menu=notifikasi&page=<?= $i ?>&cari=<?= urlencode($cari) ?>"
+   class="px-3 py-1 border rounded 
+   <?= ($i == $page) ? 'bg-blue-500 text-white' : '' ?>">
+   <?= $i ?>
+</a>
+
+<?php endfor; ?>
+
+</div>
+
+<?php } else { ?>
+
+<div class="text-center text-gray-400 py-10">
+    Tidak ada data notifikasi
+</div>
+
+<?php } ?>
 
 </div>
 
