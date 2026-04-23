@@ -1,28 +1,53 @@
 <?php
 include __DIR__ . '/../config/koneksi.php';
 
-# ========================
-# FILTER SEARCH (AMAN)
-# ========================
+/* ========================
+   FILTER
+======================== */
 $cari = $_GET['cari'] ?? '';
+$role_filter = $_GET['role'] ?? '';
 
-$sql = "
-SELECT * FROM users
-WHERE 1=1
-";
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$limit = 10;
+$offset = ($page - 1) * $limit;
+
+/* ========================
+   WHERE BUILDER
+======================== */
+$where = "WHERE 1=1";
 
 if (!empty($cari)) {
     $cari = mysqli_real_escape_string($conn, $cari);
-    $sql .= " AND username LIKE '%$cari%'";
+    $where .= " AND username LIKE '%$cari%'";
 }
 
-$sql .= " ORDER BY FIELD(role,'admin','dosen','mahasiswa'), id_user ASC";
+if (!empty($role_filter)) {
+    $role_filter = mysqli_real_escape_string($conn, $role_filter);
+    $where .= " AND role='$role_filter'";
+}
 
-$data = mysqli_query($conn, $sql);
+/* ========================
+   DATA USER
+======================== */
+$data = mysqli_query($conn, "
+SELECT * FROM users
+$where
+ORDER BY FIELD(role,'admin','dosen','mahasiswa'), id_user ASC
+LIMIT $limit OFFSET $offset
+");
 
-# ========================
-# CHART ROLE
-# ========================
+/* ========================
+   TOTAL DATA
+======================== */
+$totalData = mysqli_fetch_assoc(mysqli_query($conn, "
+SELECT COUNT(*) as total FROM users $where
+"))['total'];
+
+$totalPage = ceil($totalData / $limit);
+
+/* ========================
+   CHART ROLE
+======================== */
 $qRole = mysqli_query($conn,"
 SELECT role, COUNT(*) as total
 FROM users
@@ -37,9 +62,9 @@ while ($r = mysqli_fetch_assoc($qRole)) {
     $total_role[] = $r['total'];
 }
 
-# ========================
-# TOTAL USER
-# ========================
+/* ========================
+   TOTAL USER
+======================== */
 $total_user = mysqli_fetch_assoc(mysqli_query($conn,"
 SELECT COUNT(*) as total FROM users
 "))['total'];
@@ -61,7 +86,7 @@ SELECT COUNT(*) as total FROM users
 </div>
 
 <!-- FILTER -->
-<form method="GET" class="mb-4 flex gap-2">
+<form method="GET" class="mb-4 flex gap-2 flex-wrap">
 
 <input type="hidden" name="menu" value="kelola_user">
 
@@ -70,30 +95,38 @@ SELECT COUNT(*) as total FROM users
        placeholder="Cari username..."
        class="border p-2 rounded">
 
-<button class="bg-green-500 text-white px-4 py-2 rounded">
-Cari
-</button>
+<select name="role" class="border p-2 rounded">
+    <option value="">Semua Role</option>
+    <option value="admin" <?= $role_filter=='admin'?'selected':'' ?>>Admin</option>
+    <option value="dosen" <?= $role_filter=='dosen'?'selected':'' ?>>Dosen</option>
+    <option value="mahasiswa" <?= $role_filter=='mahasiswa'?'selected':'' ?>>Mahasiswa</option>
+</select>
+
+<button class="bg-green-500 text-white px-4 py-2 rounded">Cari</button>
 
 <a href="index.php?menu=kelola_user"
-   class="bg-gray-400 text-white px-4 py-2 rounded">
-Reset
-</a>
+   class="bg-gray-400 text-white px-4 py-2 rounded">Reset</a>
 
 </form>
 
 <!-- CHART -->
 <div class="grid md:grid-cols-2 gap-6 mb-6">
 
+<!-- CHART ROLE (KECIL) -->
 <div class="bg-white p-4 rounded shadow">
-<h4 class="font-semibold mb-2">Distribusi Role</h4>
-<canvas id="chartUser"></canvas>
+    <h4 class="font-semibold mb-2">Distribusi Role</h4>
+
+    <div style="max-width: 260px; height: 220px; margin:auto;">
+        <canvas id="chartUser"></canvas>
+    </div>
 </div>
 
+<!-- TOTAL USER -->
 <div class="bg-white p-4 rounded shadow flex items-center justify-center">
-<div class="text-center">
-<h1 class="text-3xl font-bold"><?= $total_user ?></h1>
-<p>Total User</p>
-</div>
+    <div class="text-center">
+        <h1 class="text-3xl font-bold"><?= $total_user ?></h1>
+        <p>Total User</p>
+    </div>
 </div>
 
 </div>
@@ -102,7 +135,6 @@ Reset
 <div class="bg-white rounded shadow overflow-hidden">
 
 <table class="w-full text-sm">
-
 <thead class="bg-gray-100">
 <tr>
 <th class="p-3">No</th>
@@ -114,7 +146,7 @@ Reset
 
 <tbody>
 
-<?php $no = 1; ?>
+<?php $no = $offset + 1; ?>
 
 <?php if (mysqli_num_rows($data) > 0) { ?>
 <?php while ($u = mysqli_fetch_assoc($data)) { ?>
@@ -131,51 +163,48 @@ $roleClass = match($u['role']) {
 <tr class="border-b">
 
 <td class="p-3"><?= $no++ ?></td>
-
 <td class="p-3"><?= htmlspecialchars($u['username']) ?></td>
 
 <td class="p-3">
 <span class="px-2 py-1 rounded <?= $roleClass ?>">
-    <?= $u['role'] ?>
+<?= $u['role'] ?>
 </span>
 </td>
 
 <td class="p-3 text-center">
-
-<a href="index.php?menu=edit_user&id=<?= $u['id_user'] ?>"
-   class="text-blue-600">
-Edit
-</a> |
-
-<a href="index.php?menu=hapus_user&id=<?= $u['id_user'] ?>"
-   onclick="return confirm('Yakin hapus user?')"
-   class="text-red-500">
-Hapus
-</a>
-
+<a href="index.php?menu=edit_user&id=<?= $u['id_user'] ?>" class="text-blue-600">Edit</a> |
+<a href="index.php?menu=hapus_user&id=<?= $u['id_user'] ?>" class="text-red-500" onclick="return confirm('Yakin hapus?')">Hapus</a>
 </td>
 
 </tr>
 
 <?php } ?>
 <?php } else { ?>
-
 <tr>
 <td colspan="4" class="text-center p-6 text-gray-400">
 Tidak ada data
 </td>
 </tr>
-
 <?php } ?>
 
 </tbody>
-
 </table>
 
 </div>
 
+<!-- PAGINATION -->
+<div class="mt-4 flex gap-2">
+<?php for($i=1;$i<=$totalPage;$i++): ?>
+<a href="index.php?menu=kelola_user&page=<?= $i ?>&cari=<?= $cari ?>&role=<?= $role_filter ?>"
+   class="px-3 py-1 border rounded <?= $i==$page?'bg-blue-500 text-white':'' ?>">
+   <?= $i ?>
+</a>
+<?php endfor; ?>
 </div>
 
+</div>
+
+<!-- CHART SCRIPT -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
@@ -186,6 +215,10 @@ new Chart(document.getElementById('chartUser'), {
         datasets: [{
             data: <?= json_encode($total_role) ?>
         }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false
     }
 });
 </script>

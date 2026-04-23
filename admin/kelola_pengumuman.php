@@ -1,27 +1,66 @@
 <?php
 include __DIR__ . '/../config/koneksi.php';
 
+# ========================
+# FILTER + SEARCH
+# ========================
 $filter_tanggal = $_GET['tanggal'] ?? '';
+$search = $_GET['search'] ?? '';
 
-$where = "";
+# ========================
+# PAGINATION
+# ========================
+$limit = 10;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $limit;
+
+# ========================
+# WHERE DINAMIS
+# ========================
+$where = "WHERE 1=1";
+
 if($filter_tanggal != ''){
-    $where = "WHERE p.tanggal = '$filter_tanggal'";
+    $where .= " AND p.tanggal = '$filter_tanggal'";
 }
 
-# DATA + JOIN USER
+if($search != ''){
+    $where .= " AND (
+        p.judul LIKE '%$search%' 
+        OR p.isi LIKE '%$search%'
+        OR u.username LIKE '%$search%'
+    )";
+}
+
+# ========================
+# TOTAL DATA (PAGINATION)
+# ========================
+$total_data = mysqli_fetch_assoc(mysqli_query($conn,"
+SELECT COUNT(*) as total
+FROM pengumuman p
+LEFT JOIN users u ON p.id_user = u.id_user
+$where
+"))['total'];
+
+$total_page = ceil($total_data / $limit);
+
+# ========================
+# DATA TABLE
+# ========================
 $data = mysqli_query($conn,"
 SELECT p.*, u.username 
 FROM pengumuman p
 LEFT JOIN users u ON p.id_user = u.id_user
 $where
 ORDER BY p.tanggal DESC
+LIMIT $limit OFFSET $offset
 ");
 
-# CHART
+# ========================
+# CHART (TETAP)
+# ========================
 $qChart = mysqli_query($conn,"
 SELECT tanggal, COUNT(*) as total
 FROM pengumuman
-" . ($filter_tanggal ? "WHERE tanggal='$filter_tanggal'" : "") . "
 GROUP BY tanggal
 ORDER BY tanggal ASC
 ");
@@ -41,6 +80,7 @@ SELECT COUNT(*) as total FROM pengumuman
 
 <div class="p-6">
 
+<!-- HEADER -->
 <div class="flex justify-between items-center mb-6">
 <div>
 <h2 class="text-2xl font-bold">Kelola Pengumuman</h2>
@@ -53,9 +93,18 @@ class="bg-blue-500 text-white px-4 py-2 rounded">
 </a>
 </div>
 
-<form method="GET" class="mb-4 flex gap-2">
+<!-- FILTER + SEARCH -->
+<form method="GET" class="mb-4 flex gap-2 flex-wrap">
+
 <input type="hidden" name="menu" value="kelola_pengumuman">
 
+<!-- SEARCH -->
+<input type="text" name="search"
+placeholder="Cari judul / isi / pembuat..."
+value="<?= $search ?>"
+class="border p-2 rounded w-64">
+
+<!-- FILTER TANGGAL -->
 <input type="date" name="tanggal"
 value="<?= $filter_tanggal ?>"
 class="border p-2 rounded">
@@ -64,6 +113,7 @@ class="border p-2 rounded">
 
 <a href="index.php?menu=kelola_pengumuman"
 class="bg-gray-400 text-white px-4 py-2 rounded">Reset</a>
+
 </form>
 
 <!-- CHART -->
@@ -111,15 +161,12 @@ class="bg-gray-400 text-white px-4 py-2 rounded">Reset</a>
 <td class="p-3"><?= $row['username'] ?? '-' ?></td>
 
 <td class="p-3 text-center">
-
 <a href="index.php?menu=edit_pengumuman&id=<?= $row['id_pengumuman'] ?>">Edit</a> |
-
 <a href="index.php?menu=hapus_pengumuman&id=<?= $row['id_pengumuman'] ?>"
 onclick="return confirm('Hapus pengumuman ini?')"
 class="text-red-500">
 Hapus
 </a>
-
 </td>
 
 </tr>
@@ -138,6 +185,21 @@ Tidak ada data
 </tbody>
 
 </table>
+
+</div>
+
+<!-- PAGINATION -->
+<div class="flex justify-center mt-4 gap-2">
+
+<?php for($i=1; $i<=$total_page; $i++) { ?>
+
+<a href="index.php?menu=kelola_pengumuman&page=<?= $i ?>&tanggal=<?= $filter_tanggal ?>&search=<?= $search ?>"
+class="px-3 py-1 border rounded 
+<?= ($i == $page) ? 'bg-blue-500 text-white' : '' ?>">
+<?= $i ?>
+</a>
+
+<?php } ?>
 
 </div>
 
