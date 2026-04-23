@@ -27,8 +27,8 @@ if($id_user){
 <div class="flex justify-between items-center h-16">
 
 <!-- LOGO -->
-<a href="index.php" class="text-2xl font-bold text-blue-600 tracking-wide">
-Smart Room
+<a href="index.php?menu=home" class="text-2xl font-bold text-blue-600 tracking-wide">
+    Smart Room
 </a>
 
 <!-- MENU DESKTOP -->
@@ -58,6 +58,11 @@ Status Ruangan
 <a href="index.php?menu=info_ruangan" class="block px-4 py-2 hover:bg-gray-100">
 Info Ruangan
 </a>
+<?php if($role == "dosen"){ ?>
+<a href="index.php?menu=booking_ruangan" class="block px-4 py-2 hover:bg-gray-100">
+Booking Ruangan
+</a>
+<?php } ?>
 
 </div>
 </div>
@@ -104,6 +109,7 @@ class="text-gray-700 hover:text-blue-600 font-medium transition">
 Dashboard Dosen
 </a>
 <?php } ?>
+
 
 <?php if($role == "mahasiswa"){ ?>
 <a href="index.php?menu=dashboard_mahasiswa"

@@ -97,6 +97,14 @@ case "kelola_user":
     }
 break;
 
+case "kelola_laporan":
+    if($role == "admin"){
+        include "admin/laporan.php";
+    } else {
+        echo "<div class='text-red-500'>Akses ditolak</div>";
+    }
+break;
+
 case "notifikasi":
 case "notifikasi_user":
     if($role == "admin"){
@@ -245,6 +253,14 @@ break;
 case "dashboard_dosen":
     if($role == "dosen"){
         include "dosen/dashboard.php";
+    } else {
+        echo "<div class='text-red-500'>Akses ditolak</div>";
+    }
+break;
+
+case "booking_ruangan":
+    if($role == "dosen"){
+        include "dosen/booking_ruangan.php";
     } else {
         echo "<div class='text-red-500'>Akses ditolak</div>";
     }

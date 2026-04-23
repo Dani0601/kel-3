@@ -114,7 +114,6 @@ ORDER BY lantai, nama_ruangan
 <table class="w-full text-sm text-center">
 
 <thead class="bg-gray-900 text-white sticky top-0 z-10">
-
 <tr>
 <th class="p-3 text-left w-40">Ruangan</th>
 <th class="p-3 w-16">Lt</th>
@@ -122,15 +121,12 @@ ORDER BY lantai, nama_ruangan
 <?php foreach($timeslots as $t){
 $isNow = ($now >= $t['start'] && $now < $t['end']);
 ?>
-
 <th class="p-2 text-xs <?= $isNow?'bg-yellow-400 text-black':'' ?>">
 <?= $t['start'] ?><br><?= $t['end'] ?>
 </th>
-
 <?php } ?>
 
 </tr>
-
 </thead>
 
 <tbody>
@@ -155,10 +151,20 @@ data-nama="<?= strtolower($r['nama_ruangan']) ?>">
 
 $isNow = ($now >= $t['start'] && $now < $t['end']);
 
+/* ================= CEK STATUS ================= */
 $q = mysqli_query($conn,"
-SELECT * FROM jadwal
+SELECT 1 FROM jadwal
 WHERE id_ruangan='".$r['id_ruangan']."'
 AND id_tahun_ajar='$id_tahun_aktif'
+AND hari='$hari'
+AND TIME('".$t['start']."') >= jam_mulai
+AND TIME('".$t['start']."') < jam_selesai
+
+UNION
+
+SELECT 1 FROM booking_ruangan
+WHERE id_ruangan='".$r['id_ruangan']."'
+AND DATE(tanggal) = CURDATE()
 AND hari='$hari'
 AND TIME('".$t['start']."') >= jam_mulai
 AND TIME('".$t['start']."') < jam_selesai
@@ -166,6 +172,7 @@ AND TIME('".$t['start']."') < jam_selesai
 
 $dipakai = mysqli_num_rows($q) > 0;
 
+/* ================= WARNA ================= */
 $bg = $dipakai 
     ? "bg-green-500 text-white" 
     : "bg-gray-100";
@@ -178,7 +185,7 @@ if($isNow){
 ?>
 
 <td class="p-2 text-xs <?= $bg ?> rounded">
-<?= $dipakai ? "Dipakai" : "Kosong" ?>
+<?= $dipakai ? "Terpakai" : "Tersedia" ?>
 </td>
 
 <?php } ?>

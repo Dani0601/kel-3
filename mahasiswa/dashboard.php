@@ -49,6 +49,15 @@ $selesai = $laporan['selesai'] ?? 0;
 
 // progress %
 $progress = ($total > 0) ? ($selesai / $total) * 100 : 0;
+
+// ======================
+// NOTIFIKASI
+// ======================
+$notif = $conn->query("
+    SELECT COUNT(*) as total 
+    FROM notifikasi_user 
+    WHERE id_user='$id_user' AND status_dibaca=0
+")->fetch_assoc();
 ?>
 
 <div class="p-6 space-y-6">
