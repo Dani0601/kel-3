@@ -3,17 +3,22 @@ include __DIR__ . '/../config/koneksi.php';
 
 if(isset($_POST['simpan'])){
 
-    $judul = $_POST['judul'];
-    $isi = $_POST['isi'];
-    $tanggal = date('Y-m-d');
+    $judul = mysqli_real_escape_string($conn, $_POST['judul']);
+    $isi = mysqli_real_escape_string($conn, $_POST['isi']);
+    $tanggal = date('Y-m-d H:i:s');
+    $id_user = $_SESSION['id_user'] ?? 0;
 
     if(empty($judul) || empty($isi)){
         die("Semua data wajib diisi");
     }
 
+    if($id_user == 0){
+        die("User tidak valid (session tidak ditemukan)");
+    }
+
     $sql = mysqli_query($conn,"
-        INSERT INTO pengumuman (judul, isi, tanggal)
-        VALUES ('$judul', '$isi', '$tanggal')
+        INSERT INTO pengumuman (judul, isi, tanggal, id_user)
+        VALUES ('$judul', '$isi', '$tanggal', '$id_user')
     ");
 
     if(!$sql){
