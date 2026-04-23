@@ -1,37 +1,23 @@
 <?php
 include __DIR__ . '/../config/koneksi.php';
 
-# ========================
-# FILTER
-# ========================
 $filter_tanggal = $_GET['tanggal'] ?? '';
 
 $where = "";
 if($filter_tanggal != ''){
-    $where = "WHERE tanggal = '$filter_tanggal'";
+    $where = "WHERE p.tanggal = '$filter_tanggal'";
 }
 
-# ========================
-# DATA TABEL
-# ========================
+# DATA + JOIN USER
 $data = mysqli_query($conn,"
-SELECT *
-FROM pengumuman
+SELECT p.*, u.username 
+FROM pengumuman p
+LEFT JOIN users u ON p.id_user = u.id_user
 $where
-ORDER BY tanggal DESC
+ORDER BY p.tanggal DESC
 ");
 
-# ========================
-# LIST TANGGAL (FILTER)
-# ========================
-$qTanggal = mysqli_query($conn,"
-SELECT DISTINCT tanggal FROM pengumuman
-ORDER BY tanggal DESC
-");
-
-# ========================
-# CHART PER TANGGAL
-# ========================
+# CHART
 $qChart = mysqli_query($conn,"
 SELECT tanggal, COUNT(*) as total
 FROM pengumuman
@@ -48,9 +34,6 @@ while($c = mysqli_fetch_assoc($qChart)){
     $total[] = $c['total'];
 }
 
-# ========================
-# TOTAL PENGUMUMAN
-# ========================
 $total_pengumuman = mysqli_fetch_assoc(mysqli_query($conn,"
 SELECT COUNT(*) as total FROM pengumuman
 "))['total'];
@@ -58,40 +41,29 @@ SELECT COUNT(*) as total FROM pengumuman
 
 <div class="p-6">
 
-<!-- HEADER -->
 <div class="flex justify-between items-center mb-6">
-
 <div>
 <h2 class="text-2xl font-bold">Kelola Pengumuman</h2>
 <p class="text-sm text-gray-500">Manajemen informasi kampus</p>
 </div>
 
 <a href="index.php?menu=tambah_pengumuman"
-   class="bg-blue-500 text-white px-4 py-2 rounded">
+class="bg-blue-500 text-white px-4 py-2 rounded">
 + Tambah Pengumuman
 </a>
-
 </div>
 
-<!-- FILTER -->
 <form method="GET" class="mb-4 flex gap-2">
-
 <input type="hidden" name="menu" value="kelola_pengumuman">
 
-<input type="date"
-       name="tanggal"
-       value="<?= $filter_tanggal ?>"
-       class="border p-2 rounded">
+<input type="date" name="tanggal"
+value="<?= $filter_tanggal ?>"
+class="border p-2 rounded">
 
-<button class="bg-green-500 text-white px-4 py-2 rounded">
-Cari
-</button>
+<button class="bg-green-500 text-white px-4 py-2 rounded">Cari</button>
 
 <a href="index.php?menu=kelola_pengumuman"
-   class="bg-gray-400 text-white px-4 py-2 rounded">
-Reset
-</a>
-
+class="bg-gray-400 text-white px-4 py-2 rounded">Reset</a>
 </form>
 
 <!-- CHART -->
@@ -118,9 +90,10 @@ Reset
 
 <thead class="bg-gray-100">
 <tr>
-<th class="p-3 text-left">Tanggal</th>
-<th class="p-3 text-left">Judul</th>
-<th class="p-3 text-left">Isi</th>
+<th class="p-3">Tanggal</th>
+<th class="p-3">Judul</th>
+<th class="p-3">Isi</th>
+<th class="p-3">Pembuat</th>
 <th class="p-3 text-center">Aksi</th>
 </tr>
 </thead>
@@ -128,7 +101,6 @@ Reset
 <tbody>
 
 <?php if(mysqli_num_rows($data) > 0){ ?>
-
 <?php while($row = mysqli_fetch_assoc($data)) { ?>
 
 <tr class="border-b">
@@ -136,18 +108,15 @@ Reset
 <td class="p-3"><?= $row['tanggal'] ?></td>
 <td class="p-3 font-semibold"><?= $row['judul'] ?></td>
 <td class="p-3"><?= substr($row['isi'],0,80) ?>...</td>
+<td class="p-3"><?= $row['username'] ?? '-' ?></td>
 
 <td class="p-3 text-center">
 
-<!-- EDIT -->
-<a href="index.php?menu=edit_pengumuman&id=<?= $row['id_pengumuman'] ?>">
-Edit
-</a> |
+<a href="index.php?menu=edit_pengumuman&id=<?= $row['id_pengumuman'] ?>">Edit</a> |
 
-<!-- HAPUS (FIX UTAMA) -->
 <a href="index.php?menu=hapus_pengumuman&id=<?= $row['id_pengumuman'] ?>"
-   onclick="return confirm('Hapus pengumuman ini?')"
-   class="text-red-500">
+onclick="return confirm('Hapus pengumuman ini?')"
+class="text-red-500">
 Hapus
 </a>
 
@@ -156,11 +125,10 @@ Hapus
 </tr>
 
 <?php } ?>
-
 <?php } else { ?>
 
 <tr>
-<td colspan="4" class="text-center p-6 text-gray-400">
+<td colspan="5" class="text-center p-6 text-gray-400">
 Tidak ada data
 </td>
 </tr>
@@ -175,7 +143,6 @@ Tidak ada data
 
 </div>
 
-<!-- CHART JS -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>

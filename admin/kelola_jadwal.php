@@ -12,12 +12,17 @@ if($filter_hari != ''){
 }
 
 # ========================
-# DATA TABEL
+# DATA TABEL (SUDAH FIX JOIN MK)
 # ========================
 $data = mysqli_query($conn, "
-SELECT j.*, r.nama_ruangan 
+SELECT 
+    j.*, 
+    r.nama_ruangan,
+    mk.nama_mk
 FROM jadwal j
 JOIN ruangan r ON j.id_ruangan = r.id_ruangan
+JOIN mk_prodi mp ON j.id_mk_prodi = mp.id_mk_prodi
+JOIN mata_kuliah mk ON mp.id_mk = mk.id_mk
 $where
 ORDER BY 
 FIELD(j.hari,'Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'),
@@ -151,7 +156,7 @@ Reset
 <th class="p-3 text-left">Hari</th>
 <th class="p-3 text-left">Jam</th>
 <th class="p-3 text-left">Ruangan</th>
-<th class="p-3 text-left">MK</th>
+<th class="p-3 text-left">Mata Kuliah</th>
 <th class="p-3 text-center">Aksi</th>
 </tr>
 </thead>
@@ -185,11 +190,13 @@ $bentrok = mysqli_num_rows($cek) > 0;
 
 <td class="p-3"><?= $row['nama_ruangan'] ?></td>
 
-<td class="p-3"><?= $row['id_mk_prodi'] ?></td>
+<td class="p-3">
+<?= $row['nama_mk'] ?>
+</td>
 
 <td class="p-3 text-center">
 <a href="index.php?menu=edit_jadwal&id=<?= $row['id_jadwal'] ?>">Edit</a> |
-<a href="admin/hapus_jadwal.php?id=<?= $row['id_jadwal'] ?>"
+<a href="index.php?menu=hapus_jadwal&id=<?= $row['id_jadwal'] ?>"
    onclick="return confirm('Yakin hapus jadwal ini?')"
    class="text-red-500">
    Hapus

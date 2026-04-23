@@ -1,20 +1,28 @@
 <?php
 include __DIR__ . '/../config/koneksi.php';
 
-$id = $_GET['id'] ?? 0;
+$id = intval($_GET['id'] ?? 0);
 
-$data = mysqli_fetch_assoc(mysqli_query($conn,"
-    SELECT * FROM pengumuman WHERE id_pengumuman='$id'
-"));
-
-if(!$data){
-    die("Data tidak ditemukan");
+// DEBUG (boleh dihapus nanti)
+if($id <= 0){
+    die("ID tidak valid / tidak terkirim");
 }
 
+$query = mysqli_query($conn,"
+    SELECT * FROM pengumuman WHERE id_pengumuman='$id'
+");
+
+$data = mysqli_fetch_assoc($query);
+
+if(!$data){
+    die("Data tidak ditemukan di database");
+}
+
+// ================= UPDATE =================
 if(isset($_POST['update'])){
 
-    $judul = $_POST['judul'];
-    $isi = $_POST['isi'];
+    $judul = mysqli_real_escape_string($conn, $_POST['judul']);
+    $isi = mysqli_real_escape_string($conn, $_POST['isi']);
 
     $sql = mysqli_query($conn,"
         UPDATE pengumuman SET
@@ -42,14 +50,14 @@ if(isset($_POST['update'])){
 
 <input type="text"
        name="judul"
-       value="<?= $data['judul'] ?>"
+       value="<?= htmlspecialchars($data['judul']) ?>"
        class="w-full border p-2 rounded"
        required>
 
 <textarea name="isi"
           class="w-full border p-2 rounded"
           rows="5"
-          required><?= $data['isi'] ?></textarea>
+          required><?= htmlspecialchars($data['isi']) ?></textarea>
 
 <button name="update"
         class="bg-green-500 text-white px-4 py-2 rounded">

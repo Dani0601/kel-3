@@ -2,23 +2,23 @@
 include __DIR__ . '/../config/koneksi.php';
 
 # ========================
-# FILTER
+# FILTER SEARCH (AMAN)
 # ========================
 $cari = $_GET['cari'] ?? '';
 
-$where = "";
-if($cari != ''){
-    $where = "WHERE username LIKE '%$cari%'";
+$sql = "
+SELECT * FROM users
+WHERE 1=1
+";
+
+if (!empty($cari)) {
+    $cari = mysqli_real_escape_string($conn, $cari);
+    $sql .= " AND username LIKE '%$cari%'";
 }
 
-# ========================
-# DATA USER (FIX URUTAN ROLE)
-# ========================
-$data = mysqli_query($conn,"
-SELECT * FROM users
-$where
-ORDER BY FIELD(role,'admin','dosen','mahasiswa'), id_user ASC
-");
+$sql .= " ORDER BY FIELD(role,'admin','dosen','mahasiswa'), id_user ASC";
+
+$data = mysqli_query($conn, $sql);
 
 # ========================
 # CHART ROLE
@@ -32,7 +32,7 @@ GROUP BY role
 $role = [];
 $total_role = [];
 
-while($r = mysqli_fetch_assoc($qRole)){
+while ($r = mysqli_fetch_assoc($qRole)) {
     $role[] = $r['role'];
     $total_role[] = $r['total'];
 }
@@ -66,7 +66,7 @@ SELECT COUNT(*) as total FROM users
 <input type="hidden" name="menu" value="kelola_user">
 
 <input type="text" name="cari"
-       value="<?= $cari ?>"
+       value="<?= htmlspecialchars($cari) ?>"
        placeholder="Cari username..."
        class="border p-2 rounded">
 
@@ -114,30 +114,36 @@ Reset
 
 <tbody>
 
-<?php $no=1; ?>
-<?php if(mysqli_num_rows($data)>0){ ?>
-<?php while($u = mysqli_fetch_assoc($data)){ ?>
+<?php $no = 1; ?>
+
+<?php if (mysqli_num_rows($data) > 0) { ?>
+<?php while ($u = mysqli_fetch_assoc($data)) { ?>
+
+<?php
+$roleClass = match($u['role']) {
+    'admin' => 'bg-red-200',
+    'dosen' => 'bg-blue-200',
+    'mahasiswa' => 'bg-green-200',
+    default => 'bg-gray-200'
+};
+?>
 
 <tr class="border-b">
 
 <td class="p-3"><?= $no++ ?></td>
 
-<td class="p-3"><?= $u['username'] ?></td>
+<td class="p-3"><?= htmlspecialchars($u['username']) ?></td>
 
 <td class="p-3">
-<span class="
-px-2 py-1 rounded
-<?= $u['role']=='admin' ? 'bg-red-200' : '' ?>
-<?= $u['role']=='dosen' ? 'bg-blue-200' : '' ?>
-<?= $u['role']=='mahasiswa' ? 'bg-green-200' : '' ?>
-">
-<?= $u['role'] ?>
+<span class="px-2 py-1 rounded <?= $roleClass ?>">
+    <?= $u['role'] ?>
 </span>
 </td>
 
 <td class="p-3 text-center">
 
-<a href="index.php?menu=edit_user&id=<?= $u['id_user'] ?>">
+<a href="index.php?menu=edit_user&id=<?= $u['id_user'] ?>"
+   class="text-blue-600">
 Edit
 </a> |
 
@@ -174,12 +180,12 @@ Tidak ada data
 
 <script>
 new Chart(document.getElementById('chartUser'), {
-type: 'pie',
-data: {
-labels: <?= json_encode($role) ?>,
-datasets: [{
-data: <?= json_encode($total_role) ?>
-}]
-}
+    type: 'pie',
+    data: {
+        labels: <?= json_encode($role) ?>,
+        datasets: [{
+            data: <?= json_encode($total_role) ?>
+        }]
+    }
 });
 </script>

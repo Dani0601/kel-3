@@ -158,6 +158,14 @@ case "edit_pengumuman":
     }
 break;
 
+case "hapus_pengumuman":
+    if($role == "admin"){
+        include "admin/hapus_pengumuman.php";
+    } else {
+        echo "<script>alert('Akses ditolak');history.back();</script>";
+    }
+break;
+
 /* ===== HASIL GABUNGAN (PENTING) ===== */
 
 case "tambah_gedung":
