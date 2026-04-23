@@ -1,29 +1,31 @@
 <?php
 include __DIR__ . '/../config/koneksi.php';
 
-# ========================
-# FILTER + SEARCH
-# ========================
+/* ========================
+   FILTER + SEARCH
+======================== */
 $filter_tanggal = $_GET['tanggal'] ?? '';
 $search = $_GET['search'] ?? '';
 
-# ========================
-# PAGINATION
-# ========================
+/* ========================
+   PAGINATION
+======================== */
 $limit = 10;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $limit;
 
-# ========================
-# WHERE DINAMIS
-# ========================
+/* ========================
+   WHERE DINAMIS
+======================== */
 $where = "WHERE 1=1";
 
-if($filter_tanggal != ''){
+if ($filter_tanggal != '') {
+    $filter_tanggal = mysqli_real_escape_string($conn, $filter_tanggal);
     $where .= " AND p.tanggal = '$filter_tanggal'";
 }
 
-if($search != ''){
+if ($search != '') {
+    $search = mysqli_real_escape_string($conn, $search);
     $where .= " AND (
         p.judul LIKE '%$search%' 
         OR p.isi LIKE '%$search%'
@@ -31,9 +33,9 @@ if($search != ''){
     )";
 }
 
-# ========================
-# TOTAL DATA (PAGINATION)
-# ========================
+/* ========================
+   TOTAL DATA (PAGINATION)
+======================== */
 $total_data = mysqli_fetch_assoc(mysqli_query($conn,"
 SELECT COUNT(*) as total
 FROM pengumuman p
@@ -43,9 +45,9 @@ $where
 
 $total_page = ceil($total_data / $limit);
 
-# ========================
-# DATA TABLE
-# ========================
+/* ========================
+   DATA TABLE
+======================== */
 $data = mysqli_query($conn,"
 SELECT p.*, u.username 
 FROM pengumuman p
@@ -55,26 +57,34 @@ ORDER BY p.tanggal DESC
 LIMIT $limit OFFSET $offset
 ");
 
-# ========================
-# CHART (TETAP)
-# ========================
+/* ========================
+   CHART (SUDAH IKUT FILTER)
+======================== */
 $qChart = mysqli_query($conn,"
-SELECT tanggal, COUNT(*) as total
-FROM pengumuman
-GROUP BY tanggal
-ORDER BY tanggal ASC
+SELECT p.tanggal, COUNT(*) as total
+FROM pengumuman p
+LEFT JOIN users u ON p.id_user = u.id_user
+$where
+GROUP BY p.tanggal
+ORDER BY p.tanggal ASC
 ");
 
 $tanggal = [];
 $total = [];
 
-while($c = mysqli_fetch_assoc($qChart)){
+while ($c = mysqli_fetch_assoc($qChart)) {
     $tanggal[] = $c['tanggal'];
     $total[] = $c['total'];
 }
 
+/* ========================
+   TOTAL PENGUMUMAN (FILTERED)
+======================== */
 $total_pengumuman = mysqli_fetch_assoc(mysqli_query($conn,"
-SELECT COUNT(*) as total FROM pengumuman
+SELECT COUNT(*) as total 
+FROM pengumuman p
+LEFT JOIN users u ON p.id_user = u.id_user
+$where
 "))['total'];
 ?>
 
@@ -93,18 +103,16 @@ class="bg-blue-500 text-white px-4 py-2 rounded">
 </a>
 </div>
 
-<!-- FILTER + SEARCH -->
+<!-- FILTER -->
 <form method="GET" class="mb-4 flex gap-2 flex-wrap">
 
 <input type="hidden" name="menu" value="kelola_pengumuman">
 
-<!-- SEARCH -->
 <input type="text" name="search"
 placeholder="Cari judul / isi / pembuat..."
-value="<?= $search ?>"
+value="<?= htmlspecialchars($search) ?>"
 class="border p-2 rounded w-64">
 
-<!-- FILTER TANGGAL -->
 <input type="date" name="tanggal"
 value="<?= $filter_tanggal ?>"
 class="border p-2 rounded">
@@ -121,7 +129,10 @@ class="bg-gray-400 text-white px-4 py-2 rounded">Reset</a>
 
 <div class="bg-white p-4 rounded shadow">
 <h4 class="font-semibold mb-2">Pengumuman per Tanggal</h4>
+
+<div style="height: 250px;">
 <canvas id="chartPengumuman"></canvas>
+</div>
 </div>
 
 <div class="bg-white p-4 rounded shadow flex items-center justify-center">
@@ -156,8 +167,8 @@ class="bg-gray-400 text-white px-4 py-2 rounded">Reset</a>
 <tr class="border-b">
 
 <td class="p-3"><?= $row['tanggal'] ?></td>
-<td class="p-3 font-semibold"><?= $row['judul'] ?></td>
-<td class="p-3"><?= substr($row['isi'],0,80) ?>...</td>
+<td class="p-3 font-semibold"><?= htmlspecialchars($row['judul']) ?></td>
+<td class="p-3"><?= htmlspecialchars(substr($row['isi'],0,80)) ?>...</td>
 <td class="p-3"><?= $row['username'] ?? '-' ?></td>
 
 <td class="p-3 text-center">
@@ -205,6 +216,7 @@ class="px-3 py-1 border rounded
 
 </div>
 
+<!-- CHART JS -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
@@ -213,8 +225,14 @@ type: 'bar',
 data: {
 labels: <?= json_encode($tanggal) ?>,
 datasets: [{
-data: <?= json_encode($total) ?>
+label: 'Jumlah Pengumuman',
+data: <?= json_encode($total) ?>,
+backgroundColor: '#3b82f6'
 }]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false
 }
 });
 </script>

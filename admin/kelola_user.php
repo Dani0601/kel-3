@@ -46,28 +46,52 @@ SELECT COUNT(*) as total FROM users $where
 $totalPage = ceil($totalData / $limit);
 
 /* ========================
-   CHART ROLE
-======================== */
-$qRole = mysqli_query($conn,"
-SELECT role, COUNT(*) as total
-FROM users
-GROUP BY role
-");
-
-$role = [];
-$total_role = [];
-
-while ($r = mysqli_fetch_assoc($qRole)) {
-    $role[] = $r['role'];
-    $total_role[] = $r['total'];
-}
-
-/* ========================
-   TOTAL USER
+   TOTAL USER (FILTER)
 ======================== */
 $total_user = mysqli_fetch_assoc(mysqli_query($conn,"
 SELECT COUNT(*) as total FROM users
+$where
 "))['total'];
+
+/* ========================
+   CHART ROLE (FIXED ORDER + COLOR)
+======================== */
+$roles = ['admin', 'dosen', 'mahasiswa'];
+$colors = [
+    'admin' => '#3b82f6',      // biru
+    'dosen' => '#ef4444',      // merah
+    'mahasiswa' => '#f97316'   // oranye
+];
+
+$role_count = [
+    'admin' => 0,
+    'dosen' => 0,
+    'mahasiswa' => 0
+];
+
+$qRole = mysqli_query($conn,"
+SELECT role, COUNT(*) as total
+FROM users
+$where
+GROUP BY role
+");
+
+while ($r = mysqli_fetch_assoc($qRole)) {
+    $role_count[$r['role']] = $r['total'];
+}
+
+/* ========================
+   DATA UNTUK CHART
+======================== */
+$chart_labels = [];
+$chart_data = [];
+$chart_colors = [];
+
+foreach ($roles as $r) {
+    $chart_labels[] = $r;
+    $chart_data[] = $role_count[$r];
+    $chart_colors[] = $colors[$r];
+}
 ?>
 
 <div class="p-6">
@@ -112,7 +136,6 @@ SELECT COUNT(*) as total FROM users
 <!-- CHART -->
 <div class="grid md:grid-cols-2 gap-6 mb-6">
 
-<!-- CHART ROLE (KECIL) -->
 <div class="bg-white p-4 rounded shadow">
     <h4 class="font-semibold mb-2">Distribusi Role</h4>
 
@@ -121,7 +144,6 @@ SELECT COUNT(*) as total FROM users
     </div>
 </div>
 
-<!-- TOTAL USER -->
 <div class="bg-white p-4 rounded shadow flex items-center justify-center">
     <div class="text-center">
         <h1 class="text-3xl font-bold"><?= $total_user ?></h1>
@@ -153,9 +175,9 @@ SELECT COUNT(*) as total FROM users
 
 <?php
 $roleClass = match($u['role']) {
-    'admin' => 'bg-red-200',
-    'dosen' => 'bg-blue-200',
-    'mahasiswa' => 'bg-green-200',
+    'admin' => 'bg-blue-200',
+    'dosen' => 'bg-red-200',
+    'mahasiswa' => 'bg-orange-200',
     default => 'bg-gray-200'
 };
 ?>
@@ -211,9 +233,10 @@ Tidak ada data
 new Chart(document.getElementById('chartUser'), {
     type: 'pie',
     data: {
-        labels: <?= json_encode($role) ?>,
+        labels: <?= json_encode($chart_labels) ?>,
         datasets: [{
-            data: <?= json_encode($total_role) ?>
+            data: <?= json_encode($chart_data) ?>,
+            backgroundColor: <?= json_encode($chart_colors) ?>
         }]
     },
     options: {
