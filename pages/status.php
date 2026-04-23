@@ -3,7 +3,18 @@ require_once dirname(__DIR__) . "/config/koneksi.php";
 
 date_default_timezone_set("Asia/Jakarta");
 
-/* HARI */
+/* ================= TAHUN AJAR AKTIF ================= */
+$tahun_aktif = mysqli_fetch_assoc(mysqli_query($conn,"
+    SELECT * FROM tahun_ajaran WHERE aktif=1 LIMIT 1
+"));
+
+$id_tahun_aktif = $tahun_aktif['id_tahun_ajar'] ?? 0;
+
+if(!$id_tahun_aktif){
+    die("Tidak ada tahun ajar aktif");
+}
+
+/* ================= HARI ================= */
 $hariMap = [
 "Monday"=>"Senin","Tuesday"=>"Selasa","Wednesday"=>"Rabu",
 "Thursday"=>"Kamis","Friday"=>"Jumat","Saturday"=>"Sabtu","Sunday"=>"Minggu"
@@ -12,7 +23,7 @@ $hariMap = [
 $hari = $hariMap[date("l")];
 $now  = date("H:i");
 
-/* TIMESLOT */
+/* ================= TIMESLOT ================= */
 $start = strtotime("07:30");
 $end   = strtotime("18:00");
 
@@ -35,7 +46,7 @@ while($start < $end){
     $start = $next;
 }
 
-/* GEDUNG */
+/* ================= GEDUNG ================= */
 $gedung = mysqli_query($conn,"SELECT * FROM gedung");
 ?>
 
@@ -147,6 +158,7 @@ $isNow = ($now >= $t['start'] && $now < $t['end']);
 $q = mysqli_query($conn,"
 SELECT * FROM jadwal
 WHERE id_ruangan='".$r['id_ruangan']."'
+AND id_tahun_ajar='$id_tahun_aktif'
 AND hari='$hari'
 AND TIME('".$t['start']."') >= jam_mulai
 AND TIME('".$t['start']."') < jam_selesai
@@ -204,7 +216,6 @@ document.querySelectorAll(".gedungBox").forEach(box=>{
 
 let idGedung = box.dataset.gedung;
 
-/* filter gedung */
 if(g && g != idGedung){
     box.style.display="none";
     return;
@@ -224,7 +235,6 @@ if(matchLantai && matchSearch){
 }
 });
 
-/* tampilkan sesuai limit */
 rows.forEach(r=>r.style.display="none");
 
 visible.forEach((r,i)=>{

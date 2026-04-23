@@ -3,6 +3,19 @@ require_once __DIR__ . "/../config/koneksi.php";
 
 date_default_timezone_set("Asia/Jakarta");
 
+/* ================= TAHUN AJAR AKTIF ================= */
+$tahun_aktif = mysqli_fetch_assoc(mysqli_query($conn,"
+    SELECT * FROM tahun_ajaran WHERE aktif=1 LIMIT 1
+"));
+
+$id_tahun_aktif = $tahun_aktif['id_tahun_ajar'] ?? 0;
+
+if(!$id_tahun_aktif){
+    die("Tidak ada tahun ajar aktif");
+}
+
+/* ================= FILTER ================= */
+
 $prodi    = $_GET['prodi'] ?? '';
 $semester = $_GET['semester'] ?? '';
 $dosen    = $_GET['dosen'] ?? '';
@@ -30,7 +43,8 @@ JOIN prodi ON mk_prodi.id_prodi = prodi.id_prodi
 JOIN dosen ON jadwal.id_dosen = dosen.id_dosen
 JOIN ruangan ON jadwal.id_ruangan = ruangan.id_ruangan
 JOIN kelas ON jadwal.id_kelas = kelas.id_kelas
-WHERE 1=1
+
+WHERE jadwal.id_tahun_ajar = '$id_tahun_aktif'
 ";
 
 if($prodi != '')    $query .= " AND prodi.id_prodi='$prodi'";
@@ -92,7 +106,6 @@ while($start < $end){
 
     $next = strtotime("+50 minutes", $start);
 
-    // skip istirahat
     if(date("H:i",$start) == "12:30"){
         $start = strtotime("13:00");
         continue;
@@ -256,7 +269,6 @@ foreach($timeslots as $ts){
     $ts_start = strtotime($ts['start']);
     $ts_end   = strtotime($ts['end']);
 
-    // cek overlap
     if($mulai < $ts_end && $selesai > $ts_start){
         $durasi++;
     }
@@ -312,7 +324,6 @@ $i++;
 
 </div>
 
-<!-- RESET KELAS SAAT GANTI PRODI -->
 <script>
 document.querySelector('select[name="prodi"]').addEventListener('change', function(){
     document.getElementById('kelasSelect').value = "";
