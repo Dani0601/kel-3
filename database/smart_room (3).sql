@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 23, 2026 at 04:41 AM
+-- Generation Time: Apr 23, 2026 at 05:48 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -517,7 +517,7 @@ INSERT INTO `users` (`id_user`, `username`, `password`, `role`) VALUES
 (122028, 'adhikara', '7b408ab7c1575fb59901418cf6cd54e1', 'mahasiswa'),
 (122029, 'mahasiswa', 'b398b8a18ef4f69811a32cf169946bac', 'mahasiswa'),
 (122030, 'levi', 'fc63d7ff7691da97bf635b6290434728', 'mahasiswa'),
-(122031, 'ahmadmuzakki', '$2y$10$Bb8AJPUND7gqKu5djmHoJu.wgjKPN4ChiflQpRS/MP4Vufz5mnjWO', 'mahasiswa');
+(122031, 'ahmadmuzakki', '544cdc2c02c40ea1f65a44409f65ba14', 'mahasiswa');
 
 --
 -- Indexes for dumped tables

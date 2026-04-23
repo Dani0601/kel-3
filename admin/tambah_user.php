@@ -31,7 +31,7 @@ if (isset($_POST['simpan'])) {
     }
 
     // ========================
-    // ESCAPE INPUT (AMAN SQL)
+    // ESCAPE INPUT
     // ========================
     $username = mysqli_real_escape_string($conn, $username);
 
@@ -45,9 +45,9 @@ if (isset($_POST['simpan'])) {
     }
 
     // ========================
-    // HASH PASSWORD (AMAN)
+    // 🔥 MD5 PASSWORD (FIX DI SINI)
     // ========================
-    $password = password_hash($password_plain, PASSWORD_DEFAULT);
+    $password = md5($password_plain);
 
     // ========================
     // INSERT DATA (AUTO_INCREMENT)
