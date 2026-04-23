@@ -50,7 +50,10 @@ $role = $_SESSION['role'] ?? '';
         class="block px-4 py-2 rounded-lg <?= $menu=='notifikasi'?'bg-blue-500 text-white':'' ?> hover:bg-blue-500 hover:text-white">
         Notifikasi
         </a>
-
+        <a href="?menu=kelola_mata_kuliah"
+        class="block px-4 py-2 rounded-lg <?= $menu=='kelola_mata_kuliah'?'bg-blue-500 text-white':'' ?> hover:bg-blue-500 hover:text-white">
+        Mata Kuliah
+        </a>
         <?php endif; ?>
 
         <!-- DOSEN -->

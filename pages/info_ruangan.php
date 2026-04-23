@@ -4,6 +4,18 @@ include __DIR__ . '/../config/koneksi.php';
 $search = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
 $gedung_filter = isset($_GET['gedung']) ? mysqli_real_escape_string($conn, $_GET['gedung']) : '';
 
+/* ================= WHERE DINAMIS ================= */
+$where = "WHERE 1=1";
+
+if($search != ''){
+    $where .= " AND ruangan.nama_ruangan LIKE '%$search%'";
+}
+
+if($gedung_filter != ''){
+    $where .= " AND gedung.nama_gedung = '$gedung_filter'";
+}
+
+/* ================= QUERY ================= */
 $query = mysqli_query($conn, "
 SELECT 
 ruangan.nama_ruangan,
@@ -12,12 +24,13 @@ gedung.nama_gedung
 FROM ruangan
 JOIN gedung 
 ON ruangan.id_gedung = gedung.id_gedung
-WHERE ruangan.nama_ruangan LIKE '%$search%'
-AND gedung.nama_gedung LIKE '%$gedung_filter%'
+$where
 ");
 
+/* ================= TOTAL ================= */
 $total_ruangan = mysqli_num_rows($query);
 
+/* ================= DATA GEDUNG ================= */
 $gedung = mysqli_query($conn, "SELECT * FROM gedung");
 ?>
 
@@ -151,35 +164,37 @@ Cari
 <!-- Card Ruangan -->
 <div class="grid md:grid-cols-3 gap-6">
 
+<?php if(mysqli_num_rows($query) > 0){ ?>
+
 <?php while($data = mysqli_fetch_assoc($query)): ?>
 
 <div class="bg-white rounded-2xl shadow p-6 hover:shadow-2xl hover:-translate-y-2 transition duration-300">
 
 <h3 class="text-lg font-semibold text-gray-800 mb-2">
-
 🏫 <?= $data['nama_ruangan']; ?>
-
 </h3>
 
 <p class="text-gray-500 mb-2">
-
 📍 <?= $data['nama_gedung']; ?>
-
 </p>
 
 <div class="mt-3">
-
 <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm">
-
 👥 Kapasitas <?= $data['kapasitas']; ?> orang
-
 </span>
-
 </div>
 
 </div>
 
 <?php endwhile; ?>
+
+<?php } else { ?>
+
+<p class="text-gray-400 text-center col-span-3">
+Tidak ada data ruangan
+</p>
+
+<?php } ?>
 
 </div>
 </div>

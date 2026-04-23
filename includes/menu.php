@@ -217,8 +217,29 @@ case "hapus_user":
         echo "<script>alert('Akses ditolak');history.back();</script>";
     }
 break;
+case "kelola_mata_kuliah":
+    if($role == "admin"){
+        include "admin/kelola_mata_kuliah.php";
+    }
+break;
 
+case "tambah_mata_kuliah":
+    if($role == "admin"){
+        include "admin/tambah_mata_kuliah.php";
+    }
+break;
 
+case "edit_mata_kuliah":
+    if($role == "admin"){
+        include "admin/edit_mata_kuliah.php";
+    }
+break;
+
+case "hapus_mata_kuliah":
+    if($role == "admin"){
+        include "admin/hapus_mata_kuliah.php";
+    }
+break;
 /* ================= DOSEN ================= */
 
 case "dashboard_dosen":
