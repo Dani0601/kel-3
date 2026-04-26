@@ -29,8 +29,8 @@ if($data){
     $_SESSION['role'] = $data['role'];
     $_SESSION['id_user'] = $data['id_user'];
 
-    header("Location: ../index.php");
-    exit();
+    header("Location: login.php?success=1");
+exit();
 
 }else{
 
