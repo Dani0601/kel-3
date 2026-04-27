@@ -27,8 +27,13 @@ if($id_user){
 <div class="flex justify-between items-center h-16">
 
 <!-- LOGO -->
-<a href="index.php?menu=home" class="text-2xl font-bold text-blue-600 tracking-wide">
-    Smart Room
+<a href="index.php?menu=home" class="flex items-center gap-3 p-4 border-b text-blue-600">
+    <img src="assets/img/logo_biruuu.png" class="w-10">
+    
+    <div>
+        <div class="text-xl font-bold tracking-wide">RuKo</div>
+        <p class="text-xs text-gray-500">Ruang Kosong</p>
+    </div>
 </a>
 
 <!-- MENU DESKTOP -->
