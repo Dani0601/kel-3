@@ -6,9 +6,14 @@ $role = $_SESSION['role'] ?? '';
 <div class="w-64 bg-white border-r fixed left-0 top-0 bottom-0 flex flex-col">
 
     <!-- 🔵 LOGO -->
-    <div class="p-4 text-center text-2xl font-bold text-blue-600 border-b">
-        Smart Room
+    <div class="p-4 flex items-center gap-3 text-blue-600 border-b">
+    <img src="assets/img/logo_biruuu.png" class="w-12">
+    
+    <div>
+        <div class="text-2xl font-bold">RuKo</div>
+        <p class="text-sm text-gray-500">Ruang Kosong</p>
     </div>
+</div>
 
     <!-- 🔹 MENU -->
     <nav class="flex-1 p-4 space-y-2 text-sm">
