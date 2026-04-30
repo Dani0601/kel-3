@@ -70,9 +70,6 @@ Maintenance - Scalability - Team collaboration
   <img src="assets/img/login.png" width="80%">
 </p>
 
-
-> Tambahkan screenshot sesuai tampilan project kamu
-
 ------------------------------------------------------------------------
 
 ## 🏗️ Project Structure
@@ -175,10 +172,30 @@ Update dependency:
   🔗 https://github.com/Dani0601  
 
 - **Naula Alfiyatul Fauziyyah** — Developer  
-  🔗 https://github.com/naulla
+  🔗 https://github.com/naulla  
 
-- **Alfiah Lutfi Sabilah** — Developer
-  🔗 https://github.com/alfiahlutfi
+- **Alfiah Lutfi Sabilah** — Developer  
+  🔗 https://github.com/alfiahlutfi  
+
+---
+
+## 🤝 Contributors
+
+<p align="center">
+  <a href="https://github.com/Dani0601/kel-3/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=Dani0601/kel-3" />
+  </a>
+</p>
+
+---
+
+## 📊 Contributor Stats
+
+<p align="center">
+  <img src="https://img.shields.io/github/contributors/Dani0601/kel-3?color=blue">
+  <img src="https://img.shields.io/github/commit-activity/m/Dani0601/kel-3">
+  <img src="https://img.shields.io/github/last-commit/Dani0601/kel-3">
+</p>
 
 
 ------------------------------------------------------------------------
