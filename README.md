@@ -168,44 +168,22 @@ Update dependency:
 
 ## 👨‍💻 Team
 
-- **Dani Hidayat** — Developer  
-  🔗 https://github.com/Dani0601  
-
-- **Naula Alfiyatul Fauziyyah** — Developer  
-  🔗 https://github.com/naulla  
-
-- **Alfiah Lutfi Sabilah** — Developer  
-  🔗 https://github.com/alfiahlutfi  
-
----
-
-## 🤝 Contributors
-
 <p align="center">
-  <a href="https://github.com/Dani0601/kel-3/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=Dani0601/kel-3" />
+  <a href="https://github.com/Dani0601">
+    <img src="https://github.com/Dani0601.png" width="80" style="border-radius:50%"><br>
+    <sub><b>Dani Hidayat</b></sub>
+  </a>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://github.com/naulla">
+    <img src="https://github.com/naulla.png" width="80" style="border-radius:50%"><br>
+    <sub><b>Naula Alfiyatul Fauziyyah</b></sub>
+  </a>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://github.com/alfiahlutfi">
+    <img src="https://github.com/alfiahlutfi.png" width="80" style="border-radius:50%"><br>
+    <sub><b>Alfiah Lutfi Sabilah</b></sub>
   </a>
 </p>
-
----
-
-## 📊 Contributor Statistics
-
-### 👤 Dani Hidayat
-<p>
-  <img src="https://github-readme-stats.vercel.app/api?username=Dani0601&show_icons=true&theme=tokyonight">
-</p>
-
-### 👤 Naula Alfiyatul Fauziyyah
-<p>
-  <img src="https://github-readme-stats.vercel.app/api?username=naulla&show_icons=true&theme=tokyonight">
-</p>
-
-### 👤 Alfiah Lutfi Sabilah
-<p>
-  <img src="https://github-readme-stats.vercel.app/api?username=alfiahlutfi&show_icons=true&theme=tokyonight">
-</p>
-
 
 ------------------------------------------------------------------------
 
