@@ -6,8 +6,9 @@ if (!isset($_SESSION['login'])) {
     header("Location: auth/login.php");
     exit();
 }
-?>
 
+$role = $_SESSION['role'] ?? '';
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -24,54 +25,7 @@ if (!isset($_SESSION['login'])) {
 
 <style>
 body{ font-family:'Poppins',sans-serif; }
-</style>
 
-</head>
-
-<body class="bg-gray-100">
-
-<?php 
-$role = $_SESSION['role'] ?? '';
-
-if($role != 'admin'){
-    include "includes/navbar.php";
-}
-?>
-
-<?php
-$role = $_SESSION['role'] ?? '';
-?>
-
-<?php if(isset($_GET['notif'])): ?>
-
-<div id="notifBox"
-class="fixed top-5 right-5 z-50 px-6 py-3 rounded-xl shadow-lg text-white animate-slideIn
-<?php
-switch($_GET['notif']){
-    case 'hapus_sukses': echo 'bg-red-500'; break;
-    case 'simpan_sukses': echo 'bg-green-500'; break;
-    case 'update_sukses': echo 'bg-blue-500'; break;
-    case 'error': echo 'bg-gray-500'; break;
-    case 'error_tahun': echo 'bg-yellow-500'; break;
-    default: echo 'bg-gray-800';
-}
-?>
-">
-
-    <?php
-    switch($_GET['notif']){
-    case 'hapus_sukses': echo 'Data berhasil dihapus'; break;
-    case 'simpan_sukses': echo 'Data berhasil disimpan'; break;
-    case 'update_sukses': echo 'Data berhasil diupdate'; break;
-    case 'error': echo 'Terjadi kesalahan'; break;
-    case 'error_tahun': echo 'Tahun ajar belum diatur!'; break;
-    default: echo 'Notifikasi';
-}
-    ?>
-
-</div>
-
-<style>
 @keyframes slideIn {
     from {
         transform: translateX(100%);
@@ -87,6 +41,43 @@ switch($_GET['notif']){
 }
 </style>
 
+</head>
+
+<!-- FLEX LAYOUT WAJIB -->
+<body class="bg-gray-100 flex flex-col min-h-screen">
+
+<?php 
+if($role != 'admin'){
+    include "includes/navbar.php";
+}
+?>
+
+<!-- ================= NOTIF ================= -->
+<?php if(isset($_GET['notif'])): ?>
+<div id="notifBox"
+class="fixed top-5 right-5 z-50 px-6 py-3 rounded-xl shadow-lg text-white animate-slideIn
+<?php
+switch($_GET['notif']){
+    case 'hapus_sukses': echo 'bg-red-500'; break;
+    case 'simpan_sukses': echo 'bg-green-500'; break;
+    case 'update_sukses': echo 'bg-blue-500'; break;
+    case 'error': echo 'bg-gray-500'; break;
+    case 'error_tahun': echo 'bg-yellow-500'; break;
+    default: echo 'bg-gray-800';
+}
+?>">
+<?php
+switch($_GET['notif']){
+    case 'hapus_sukses': echo 'Data berhasil dihapus'; break;
+    case 'simpan_sukses': echo 'Data berhasil disimpan'; break;
+    case 'update_sukses': echo 'Data berhasil diupdate'; break;
+    case 'error': echo 'Terjadi kesalahan'; break;
+    case 'error_tahun': echo 'Tahun ajar belum diatur!'; break;
+    default: echo 'Notifikasi';
+}
+?>
+</div>
+
 <script>
 setTimeout(()=>{
     let notif = document.getElementById('notifBox');
@@ -97,27 +88,26 @@ setTimeout(()=>{
     }
 },3000);
 </script>
-
 <?php endif; ?>
 
-<div class="flex">
 
-    <!-- SIDEBAR (HANYA ADMIN) -->
+<!-- ================= MAIN ================= -->
+<div class="flex flex-1">
+
+    <!-- SIDEBAR -->
     <?php if($role == 'admin'){ ?>
         <?php include "includes/sidebar.php"; ?>
     <?php } ?>
 
     <!-- CONTENT -->
-    <div class="flex-1 pt-20 px-6 pb-10 
-    <?= ($role == 'admin') ? 'ml-64' : '' ?>">
-
+    <main class="flex-1 pt-20 px-6 pb-10 <?= ($role == 'admin') ? 'ml-64' : '' ?>">
         <?php include "includes/menu.php"; ?>
-
-    </div>
+    </main>
 
 </div>
 
-<!-- ================= DELETE MODAL GLOBAL ================= -->
+
+<!-- ================= DELETE MODAL ================= -->
 <div id="deleteModal"
 class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
 
@@ -132,7 +122,6 @@ class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justif
         </p>
 
         <div class="flex justify-center gap-3">
-
             <button onclick="closeDeleteModal()"
             class="px-4 py-2 bg-gray-400 text-white rounded">
                 Batal
@@ -142,7 +131,6 @@ class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justif
             class="px-4 py-2 bg-red-600 text-white rounded">
                 Hapus
             </a>
-
         </div>
 
     </div>
@@ -164,8 +152,8 @@ function closeDeleteModal(){
 }
 </script>
 
+<!-- FOOTER TERPISAH -->
 <?php include "includes/footer.php"; ?>
 
 </body>
-
 </html>
