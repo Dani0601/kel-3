@@ -36,13 +36,13 @@ Maintenance - Scalability - Team collaboration
 
 ## 🧠 Tech Stack
 
-  Layer        Technology
-  ------------ -----------------
-  Backend      PHP Native
-  Dependency   Composer
-  Email        PHPMailer
-  Server       XAMPP / Laragon
-  Versioning   Git & GitHub
+![PHP](https://img.shields.io/badge/PHP-8.x-777BB4?logo=php&logoColor=white)
+![Composer](https://img.shields.io/badge/Composer-Dependency_Manager-885630?logo=composer&logoColor=white)
+![PHPMailer](https://img.shields.io/badge/PHPMailer-Email-6C3483)
+![XAMPP](https://img.shields.io/badge/XAMPP-Server-FB7A24?logo=apache&logoColor=white)
+![Laragon](https://img.shields.io/badge/Laragon-Server-0E83CD)
+![Git](https://img.shields.io/badge/Git-Version_Control-F05032?logo=git&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?logo=github&logoColor=white)
 
 ------------------------------------------------------------------------
 
