@@ -169,20 +169,16 @@ Update dependency:
 ## 👨‍💻 Team
 
 <p align="center">
-  <a href="https://github.com/Dani0601">
-    <img src="https://github.com/Dani0601.png" width="80" style="border-radius:50%"><br>
-    <sub><b>Dani Hidayat</b></sub>
-  </a>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://github.com/naulla">
-    <img src="https://github.com/naulla.png" width="80" style="border-radius:50%"><br>
-    <sub><b>Naula Alfiyatul Fauziyyah</b></sub>
-  </a>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://github.com/alfiahlutfi">
-    <img src="https://github.com/alfiahlutfi.png" width="80" style="border-radius:50%"><br>
-    <sub><b>Alfiah Lutfi Sabilah</b></sub>
-  </a>
+
+<strong>Dani Hidayat</strong><br>
+<a href="https://github.com/Dani0601">github.com/Dani0601</a><br><br>
+
+<strong>Naula Alfiyatul Fauziyyah</strong><br>
+<a href="https://github.com/naulla">github.com/naulla</a><br><br>
+
+<strong>Alfiah Lutfi Sabilah</strong><br>
+<a href="https://github.com/alfiahlutfi">github.com/alfiahlutfi</a>
+
 </p>
 
 ------------------------------------------------------------------------
