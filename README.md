@@ -189,12 +189,21 @@ Update dependency:
 
 ---
 
-## 📊 Contributor Stats
+## 📊 Contributor Statistics
 
-<p align="center">
-  <img src="https://img.shields.io/github/contributors/Dani0601/kel-3?color=blue">
-  <img src="https://img.shields.io/github/commit-activity/m/Dani0601/kel-3">
-  <img src="https://img.shields.io/github/last-commit/Dani0601/kel-3">
+### 👤 Dani Hidayat
+<p>
+  <img src="https://github-readme-stats.vercel.app/api?username=Dani0601&show_icons=true&theme=tokyonight">
+</p>
+
+### 👤 Naula Alfiyatul Fauziyyah
+<p>
+  <img src="https://github-readme-stats.vercel.app/api?username=naulla&show_icons=true&theme=tokyonight">
+</p>
+
+### 👤 Alfiah Lutfi Sabilah
+<p>
+  <img src="https://github-readme-stats.vercel.app/api?username=alfiahlutfi&show_icons=true&theme=tokyonight">
 </p>
 
 
