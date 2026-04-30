@@ -35,10 +35,8 @@ if(isset($_POST['update'])){
         die(mysqli_error($conn));
     }
 
-    echo "<script>
-    alert('Pengumuman berhasil diupdate');
-    location='index.php?menu=kelola_pengumuman';
-    </script>";
+    header("Location: index.php?menu=kelola_pengumuman&msg=update");
+    exit;
 }
 ?>
 

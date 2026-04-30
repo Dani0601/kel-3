@@ -39,7 +39,7 @@ if(isset($_POST['simpan'])){
 
     # ================= VALIDASI =================
     if(empty($hari) || empty($jam_mulai)){
-        echo "<script>alert('Data tidak lengkap');history.back();</script>";
+        header("Location: index.php?menu=tambah_jadwal&error=kosong");
         exit;
     }
 
@@ -52,7 +52,7 @@ if(isset($_POST['simpan'])){
     ");
 
     if(mysqli_num_rows($ambil) == 0){
-        echo "<script>alert('Mata kuliah tidak ditemukan');history.back();</script>";
+        header("Location: index.php?menu=tambah_jadwal&error=mk");
         exit;
     }
 
@@ -72,7 +72,7 @@ if(isset($_POST['simpan'])){
     $jam_selesai = date("H:i", $selesai);
 
     if($jam_mulai >= $jam_selesai){
-        echo "<script>alert('Jam tidak valid');history.back();</script>";
+        header("Location: index.php?menu=tambah_jadwal&error=jam");
         exit;
     }
 
@@ -93,7 +93,7 @@ if(isset($_POST['simpan'])){
     ");
 
     if(mysqli_num_rows($cek) > 0){
-        echo "<script>alert('❌ Jadwal bentrok (ruangan/dosen/kelas)!');history.back();</script>";
+        header("Location: index.php?menu=tambah_jadwal&error=bentrok");
         exit;
     }
 
@@ -117,7 +117,8 @@ if(isset($_POST['simpan'])){
         die("Error insert: " . mysqli_error($conn));
     }
 
-    echo "<script>alert('Berhasil ditambahkan');location='index.php?menu=kelola_jadwal';</script>";
+    header("Location: index.php?menu=kelola_jadwal&msg=tambah");
+    exit;
 }
 ?>
 

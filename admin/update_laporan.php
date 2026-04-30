@@ -14,6 +14,6 @@ SET judul='$judul',
 WHERE id_laporan='$id'
 ");
 
-header("Location: ../index.php?menu=laporan");
+header("Location: ../index.php?menu=kelola_laporan");
 exit;
 ?>

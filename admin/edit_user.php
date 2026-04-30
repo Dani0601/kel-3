@@ -28,7 +28,7 @@ if(isset($_POST['update'])){
 
     // VALIDASI
     if(empty($username) || empty($role)){
-        echo "<script>alert('Data tidak boleh kosong');history.back();</script>";
+        header("Location: index.php?menu=edit_user&id=$id&error=kosong");
         exit;
     }
 
@@ -40,7 +40,7 @@ if(isset($_POST['update'])){
     ");
 
     if(mysqli_num_rows($cek) > 0){
-        echo "<script>alert('Username sudah digunakan!');history.back();</script>";
+        header("Location: index.php?menu=edit_user&id=$id&error=username");
         exit;
     }
 
@@ -71,10 +71,8 @@ if(isset($_POST['update'])){
         die("ERROR: " . mysqli_error($conn));
     }
 
-    echo "<script>
-    alert('User berhasil diupdate');
-    location='index.php?menu=kelola_user';
-    </script>";
+    header("Location: index.php?menu=kelola_user&msg=update");
+    exit;
 }
 ?>
 

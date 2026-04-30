@@ -92,18 +92,14 @@ try {
     /* ================= COMMIT ================= */
     mysqli_commit($conn);
 
-    echo "<script>
-        alert('Gedung & Ruangan berhasil dibuat');
-        location='../index.php?menu=kelola_ruangan';
-    </script>";
+    header("Location: ../index.php?menu=kelola_ruangan&msg=simpan");
+    exit;
 
 } catch (Exception $e){
 
     /* ================= ROLLBACK ================= */
     mysqli_rollback($conn);
 
-    echo "<script>
-        alert('Error: ".$e->getMessage()."');
-        history.back();
-    </script>";
+    header("Location: ../index.php?menu=kelola_ruangan&error=gagal");
+    exit;
 }

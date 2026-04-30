@@ -9,7 +9,8 @@ if(isset($_POST['tambah_tahun'])){
     $semester = mysqli_real_escape_string($conn, $_POST['semester']);
 
     if($tahun == '' || $semester == ''){
-        echo "<script>alert('Data tidak boleh kosong');</script>";
+        header("Location: index.php?menu=kelola_jadwal&error=kosong");
+        exit;
     }else{
 
         $cek = mysqli_query($conn,"
@@ -18,14 +19,15 @@ if(isset($_POST['tambah_tahun'])){
         ");
 
         if(mysqli_num_rows($cek) > 0){
-            echo "<script>alert('Tahun ajar sudah ada');</script>";
+            header("Location: index.php?menu=kelola_jadwal&error=duplikat");
+            exit;
         }else{
             mysqli_query($conn,"
                 INSERT INTO tahun_ajaran (tahun, semester, aktif)
                 VALUES('$tahun','$semester',0)
             ");
 
-            echo "<script>alert('Berhasil ditambahkan');location='index.php?menu=kelola_jadwal';</script>";
+            header("Location: index.php?menu=kelola_jadwal&msg=tambah");
             exit;
         }
     }
@@ -47,7 +49,7 @@ if(isset($_GET['aktifkan_tahun'])){
     mysqli_query($conn,"UPDATE tahun_ajaran SET aktif=0");
     mysqli_query($conn,"UPDATE tahun_ajaran SET aktif=1 WHERE id_tahun_ajar='$id'");
 
-    echo "<script>location='index.php?menu=kelola_jadwal';</script>";
+    header("Location: index.php?menu=kelola_jadwal&notif=simpan_sukses");
     exit;
 }
 
@@ -129,11 +131,20 @@ $data = mysqli_query($conn, "
 ?>
 
 <div class="p-6">
+    <!-- HEADER -->
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <h2 class="text-2xl font-bold">Kelola Tahun Ajar</h2>
+            <p class="text-sm text-gray-500">Manajemen jadwal ruangan dan perkuliahan</p>
+        </div>
+    </div>
 
     <!-- ================= TAHUN AJAR ================= -->
-    <h2 class="text-2xl font-bold mb-3">Kelola Tahun Ajar</h2>
 
     <div class="bg-white rounded-2xl shadow overflow-hidden mb-6">
+        <div class="p-4 border-b">
+            <h3 class="font-semibold text-gray-700">Data Tahun Ajar</h3>
+        </div>
 
         <div class="p-4">
             <form method="POST" class="flex gap-2 flex-wrap">
@@ -157,9 +168,6 @@ $data = mysqli_query($conn, "
             </form>
         </div>
 
-        <div class="p-4 border-b">
-            <h3 class="font-semibold text-gray-700">Data Tahun Ajar</h3>
-        </div>
         <div class="overflow-x-auto">
             <table class="min-w-full text-sm">
 
@@ -239,6 +247,43 @@ $data = mysqli_query($conn, "
     <h3 class="font-semibold text-gray-700">Data Jadwal</h3>
 </div>
 
+<!-- FILTER + SEARCH -->
+<div class="p-4">
+<form method="GET" class="mb-4 flex gap-2 flex-wrap">
+
+<input type="hidden" name="menu" value="kelola_jadwal">
+
+<input type="text" name="search"
+value="<?= htmlspecialchars($search) ?>"
+placeholder="Cari mata kuliah / ruangan..."
+class="border p-2 rounded w-64">
+
+<select name="hari" class="border p-2 rounded">
+<option value="">Semua Hari</option>
+
+<?php
+$hari_list = ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'];
+foreach($hari_list as $h){
+?>
+<option value="<?= $h ?>" <?= ($filter_hari==$h?'selected':'') ?>>
+<?= $h ?>
+</option>
+<?php } ?>
+
+</select>
+
+<button class="bg-green-500 text-white px-4 py-2 rounded">
+Cari
+</button>
+
+<a href="index.php?menu=kelola_jadwal"
+class="bg-gray-400 text-white px-4 py-2 rounded">
+Reset
+</a>
+
+</form>
+</div>
+
 <div class="overflow-x-auto">
 <table class="min-w-full text-sm">
 
@@ -285,8 +330,8 @@ class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded text-xs hover:bg-yellow-2
 Edit
 </a>
 
-<a href="index.php?menu=hapus_jadwal&id=<?= $row['id_jadwal'] ?>"
-onclick="return confirm('Yakin hapus?')"
+<a href="#"
+onclick="openDeleteModal('index.php?menu=hapus_jadwal&id=<?= $row['id_jadwal'] ?>', 'Hapus Jadwal?')"
 class="bg-red-100 text-red-600 px-3 py-1 rounded-lg text-xs hover:bg-red-200 transition">
 Hapus
 </a>
@@ -313,6 +358,24 @@ Hapus
 </tbody>
 </table>
 </div>
+
+</div>
+
+<!-- PAGINATION -->
+<div class="flex justify-center mt-4 gap-2">
+
+<?php for($i=1; $i <= $total_page; $i++): ?>
+
+<a href="index.php?menu=kelola_jadwal
+&page=<?= $i ?>
+&hari=<?= urlencode($filter_hari) ?>
+&search=<?= urlencode($search) ?>"
+class="px-3 py-1 border rounded-lg text-sm
+<?= ($i == $page) ? 'bg-blue-500 text-white' : 'bg-white hover:bg-gray-100' ?>">
+<?= $i ?>
+</a>
+
+<?php endfor; ?>
 
 </div>
 </div>

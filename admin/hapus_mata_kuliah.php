@@ -13,4 +13,5 @@ mysqli_query($conn,"
     DELETE FROM mata_kuliah WHERE id_mk='$id'
 ");
 
-echo "<script>alert('Data berhasil dihapus');location='index.php?menu=kelola_mata_kuliah';</script>";
+header("Location: index.php?menu=kelola_mata_kuliah&msg=hapus");
+exit;

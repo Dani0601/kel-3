@@ -27,13 +27,13 @@ $pesan = htmlspecialchars($_POST['pesan'] ?? '');
 
 // validasi kosong
 if (empty($nama) || empty($email) || empty($pesan)) {
-    echo "<script>alert('Semua field wajib diisi');history.back();</script>";
+    header("Location: ../index.php?menu=kontak&error=kosong");
     exit;
 }
 
 // validasi email
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    echo "<script>alert('Email tidak valid');history.back();</script>";
+    header("Location: ../index.php?menu=kontak&error=email");
     exit;
 }
 
@@ -92,17 +92,13 @@ try {
 
     $mail->send();
 
-    echo "<script>
-    alert('Pesan berhasil dikirim');
-    window.location='../index.php?menu=kontak';
-    </script>";
+    header("Location: ../index.php?menu=kontak&msg=sukses");
+    exit;
 
 } catch (Exception $e) {
 
-    echo "<script>
-    alert('Pesan gagal dikirim');
-    history.back();
-    </script>";
+    header("Location: ../index.php?menu=kontak&error=gagal");
+    exit;
 
     // aktifkan ini kalau mau lihat error asli
     // echo $mail->ErrorInfo;

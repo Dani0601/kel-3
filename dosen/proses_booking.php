@@ -11,7 +11,7 @@ $q = $conn->query("SELECT * FROM dosen WHERE id_user='$id_user'");
 $dosen = $q->fetch_assoc();
 
 if(!$dosen){
-    echo "<script>alert('❌ Data dosen tidak ditemukan');history.back();</script>";
+    header("Location: index.php?menu=booking&error=dosen");
     exit;
 }
 
@@ -44,7 +44,7 @@ $jam_selesai = $mulai->format("H:i");
 // VALIDASI JAM
 // ======================
 if($jam_selesai > "18:00"){
-    echo "<script>alert('❌ Melebihi jam operasional');history.back();</script>";
+    header("Location: index.php?menu=booking&error=jam");
     exit;
 }
 
@@ -54,7 +54,7 @@ if($jam_selesai > "18:00"){
 $ta = $conn->query("SELECT * FROM tahun_ajaran WHERE aktif=1")->fetch_assoc();
 
 if(!$ta){
-    echo "<script>alert('❌ Tahun ajar belum diatur!');history.back();</script>";
+    header("Location: index.php?menu=booking&error=tahun");
     exit;
 }
 
@@ -84,7 +84,7 @@ AND NOT (
 ");
 
 if($cek->num_rows > 0){
-    echo "<script>alert('❌ Ruangan bentrok!');history.back();</script>";
+    header("Location: index.php?menu=booking&error=bentrok");
     exit;
 }
 
@@ -94,7 +94,7 @@ if($cek->num_rows > 0){
 $ta = $conn->query("SELECT * FROM tahun_ajaran WHERE aktif=1")->fetch_assoc();
 
 if(!$ta){
-    echo "<script>alert('❌ Tahun ajar belum diatur!');history.back();</script>";
+    header("Location: ".$_SERVER['HTTP_REFERER']."&notif=error_tahun");
     exit;
 }
 

@@ -25,10 +25,8 @@ if(isset($_POST['simpan'])){
         die(mysqli_error($conn));
     }
 
-    echo "<script>
-    alert('Pengumuman berhasil ditambahkan');
-    location='index.php?menu=kelola_pengumuman';
-    </script>";
+    header("Location: index.php?menu=kelola_pengumuman&msg=tambah");
+    exit;
 
     include "admin/tambah_notifikasi.php";
 

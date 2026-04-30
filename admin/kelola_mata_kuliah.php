@@ -42,43 +42,53 @@ LIMIT $limit OFFSET $offset
 <div class="p-6">
 
 <!-- HEADER -->
-<div class="flex justify-between mb-4">
-    <h2 class="text-2xl font-bold">Kelola Mata Kuliah</h2>
+<div class="flex justify-between items-center mb-4">
 
+    <!-- KIRI -->
+    <div>
+        <h2 class="text-2xl font-bold text-gray-800">
+            Kelola Mata Kuliah
+        </h2>
+        <p class="text-sm text-gray-500">
+            Manajemen data mata kuliah dan informasi akademik
+        </p>
+    </div>
+
+    <!-- KANAN -->
     <a href="index.php?menu=tambah_mata_kuliah"
        class="bg-blue-500 text-white px-4 py-2 rounded">
        + Tambah
     </a>
+
 </div>
 
-<!-- FILTER -->
-<form method="GET" class="flex gap-2 mb-4">
-<input type="hidden" name="menu" value="kelola_mata_kuliah">
-
-<input type="text" name="search"
-value="<?= $search ?>"
-placeholder="Cari kode / nama MK..."
-class="border p-2 rounded w-64">
-
-<select name="limit" class="border p-2 rounded">
-<?php foreach([5,10,20,50] as $l){ ?>
-<option value="<?= $l ?>" <?= ($limit==$l?'selected':'') ?>>
-<?= $l ?>
-</option>
-<?php } ?>
-</select>
-
-<button class="bg-green-500 text-white px-4 py-2 rounded">
-Filter
-</button>
-</form>
-
-<!-- TABLE -->
 <!-- TABLE -->
 <div class="bg-white rounded-2xl shadow overflow-hidden">
 
     <div class="p-4 border-b">
         <h3 class="font-semibold text-gray-700">Data Mata Kuliah</h3>
+    </div>
+
+    <!-- FILTER -->
+    <div class="bg-white p-4 rounded-2xl shadow flex flex-wrap gap-3">
+    <input type="hidden" name="menu" value="kelola_mata_kuliah">
+
+    <input type="text" name="search"
+    value="<?= $search ?>"
+    placeholder="Cari kode / nama MK..."
+    class="border p-2 rounded w-64">
+
+    <select name="limit" class="border p-2 rounded">
+    <?php foreach([5,10,20,50] as $l){ ?>
+    <option value="<?= $l ?>" <?= ($limit==$l?'selected':'') ?>>
+    <?= $l ?>
+    </option>
+    <?php } ?>
+    </select>
+
+    <button class="bg-green-500 text-white px-4 py-2 rounded">
+    Filter
+    </button>
     </div>
 
     <div class="overflow-x-auto">
@@ -136,9 +146,9 @@ Filter
                         Edit
                     </a>
 
-                    <a href="index.php?menu=hapus_mata_kuliah&id=<?= $d['id_mk'] ?>"
-                    onclick="return confirm('Hapus MK beserta relasi?')"
-                    class="bg-red-100 text-red-600 px-3 py-1 rounded text-xs hover:bg-red-200 transition">
+                    <a href="#"
+                        onclick="openDeleteModal('index.php?menu=hapus_mata_kuliah&id=<?= $d['id_mk'] ?>', 'Hapus Mata Kuliah?')"
+                        class="bg-red-100 text-red-600 px-3 py-1 rounded text-xs hover:bg-red-200 transition">
                         Hapus
                     </a>
 

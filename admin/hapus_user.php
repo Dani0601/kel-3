@@ -10,7 +10,7 @@ ini_set('display_errors', 1);
 $id = $_GET['id'] ?? '';
 
 if($id == ''){
-    echo "<script>alert('ID tidak valid');history.back();</script>";
+    header("Location: index.php?menu=kelola_user&error=invalid");
     exit;
 }
 
@@ -22,7 +22,7 @@ $cek = mysqli_query($conn,"
 ");
 
 if(mysqli_num_rows($cek) == 0){
-    echo "<script>alert('Data tidak ditemukan');history.back();</script>";
+    header("Location: index.php?menu=kelola_user&error=notfound");
     exit;
 }
 
@@ -40,8 +40,5 @@ if(!$sql){
 // ========================
 // REDIRECT
 // ========================
-echo "<script>
-alert('User berhasil dihapus');
-location='index.php?menu=kelola_user';
-</script>";
-?>
+header("Location: index.php?menu=kelola_user&msg=hapus");
+exit;

@@ -191,8 +191,8 @@ class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded text-xs hover:bg-yellow-2
 Edit
 </a>
 
-<a href="index.php?menu=hapus_pengumuman&id=<?= $row['id_pengumuman'] ?>"
-onclick="return confirm('Yakin hapus?')"
+<a href="#"
+onclick="openDeleteModal('index.php?menu=hapus_pengumuman&id=<?= $row['id_pengumuman'] ?>', 'Hapus Pengumuman?')"
 class="bg-red-100 text-red-600 px-3 py-1 rounded-lg text-xs hover:bg-red-200 transition">
 Hapus
 </a>

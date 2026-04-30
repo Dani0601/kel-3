@@ -18,7 +18,7 @@ if(isset($_POST['simpan'])){
 
     /* VALIDASI */
     if(empty($prodi_ids)){
-        echo "<script>alert('Pilih minimal 1 prodi');history.back();</script>";
+        header("Location: index.php?menu=tambah_mata_kuliah&error=prodi");
         exit;
     }
 
@@ -31,7 +31,7 @@ if(isset($_POST['simpan'])){
         ");
 
         if(mysqli_num_rows($cek) > 0){
-            echo "<script>alert('MK sudah ada');history.back();</script>";
+            header("Location: index.php?menu=tambah_mata_kuliah&error=duplikat");
             exit;
         }
 
@@ -62,7 +62,8 @@ if(isset($_POST['simpan'])){
         }
     }
 
-    echo "<script>alert('Berhasil disimpan');location='index.php?menu=kelola_mata_kuliah';</script>";
+    header("Location: index.php?menu=kelola_mata_kuliah&msg=tambah");
+    exit;
 }
 ?>
 

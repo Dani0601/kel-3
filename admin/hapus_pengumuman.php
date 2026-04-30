@@ -6,10 +6,7 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 // VALIDASI ID
 if($id <= 0){
-    echo "<script>
-    alert('ID tidak valid');
-    location='index.php?menu=kelola_pengumuman';
-    </script>";
+    header("Location: index.php?menu=kelola_pengumuman&error=notfound");
     exit;
 }
 
@@ -19,10 +16,7 @@ $cek = mysqli_query($conn,"
 ");
 
 if(mysqli_num_rows($cek) == 0){
-    echo "<script>
-    alert('Data tidak ditemukan');
-    location='index.php?menu=kelola_pengumuman';
-    </script>";
+    header("Location: index.php?menu=kelola_pengumuman&error=gagal");
     exit;
 }
 
@@ -33,15 +27,10 @@ $hapus = mysqli_query($conn,"
 ");
 
 if(!$hapus){
-    echo "<script>
-    alert('Gagal menghapus');
-    location='index.php?menu=kelola_pengumuman';
-    </script>";
+    header("Location: ../index.php?menu=kelola_pengumuman&notif=error");
     exit;
 }
 
 // SUKSES
-echo "<script>
-alert('Pengumuman berhasil dihapus');
-location='index.php?menu=kelola_pengumuman';
-</script>";
+header("Location: ../index.php?menu=kelola_pengumuman&notif=hapus_sukses");
+exit;

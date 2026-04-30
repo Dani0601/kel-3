@@ -32,7 +32,7 @@ if(isset($_POST['update'])){
 
     /* VALIDASI JAM */
     if($jam_mulai >= $jam_selesai){
-        echo "<script>alert('Jam tidak valid');history.back();</script>";
+        header("Location: index.php?menu=edit_jadwal&id=$id&error=jam");
         exit;
     }
 
@@ -49,7 +49,7 @@ if(isset($_POST['update'])){
     ");
 
     if(mysqli_num_rows($cek) > 0){
-        echo "<script>alert('❌ Jadwal bentrok!');history.back();</script>";
+        header("Location: index.php?menu=edit_jadwal&id=$id&error=bentrok");
         exit;
     }
 
@@ -71,7 +71,8 @@ if(isset($_POST['update'])){
         die("Error update: " . mysqli_error($conn));
     }
 
-    echo "<script>alert('Berhasil diupdate');location='index.php?menu=kelola_jadwal';</script>";
+    header("Location: index.php?menu=kelola_jadwal&msg=update");
+    exit;
 }
 
 /* ================= DROPDOWN DATA ================= */

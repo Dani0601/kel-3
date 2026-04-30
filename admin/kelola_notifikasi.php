@@ -17,10 +17,8 @@ if(isset($_GET['hapus'])){
         WHERE id_notifikasi = '$id'
     ");
 
-    echo "<script>
-        alert('Notifikasi dihapus');
-        location='index.php?menu=notifikasi';
-    </script>";
+    header("Location: index.php?menu=notifikasi&msg=hapus");
+    exit;
 }
 
 if(isset($_GET['restore'])){
@@ -32,10 +30,8 @@ if(isset($_GET['restore'])){
         WHERE id_notifikasi = '$id'
     ");
 
-    echo "<script>
-        alert('Notifikasi dikembalikan');
-        location='index.php?menu=notifikasi';
-    </script>";
+    header("Location: index.php?menu=notifikasi&msg=restore");
+    exit;
 }
 
 /* =========================
@@ -87,6 +83,9 @@ $total_page = ceil($total_data / $limit);
     <h2 class="text-2xl font-bold text-gray-800">
         Kelola Notifikasi
     </h2>
+    <p class="text-sm text-gray-500">
+        Manajemen notifikasi sistem dan informasi pengguna
+    </p>
 </div>
 
 <div class="max-w-4xl mx-auto mt-6">
@@ -199,9 +198,10 @@ if(isset($_POST['kirim'])){
 
         <?php if($d['status'] == 'aktif'): ?>
 
-        <a href="index.php?menu=notifikasi&hapus=<?= $d['id_notifikasi'] ?>"
-        class="bg-red-100 text-red-600 px-3 py-1 rounded text-xs">
-        Hapus
+        <a href="#"
+            onclick="openDeleteModal('index.php?menu=notifikasi&hapus=<?= $d['id_notifikasi'] ?>', 'Hapus Notifikasi?')"
+            class="bg-red-100 text-red-600 px-3 py-1 rounded text-xs">
+            Hapus
         </a>
 
         <?php else: ?>
@@ -222,7 +222,7 @@ if(isset($_POST['kirim'])){
 </div>
 
 <!-- ================= PAGINATION ================= -->
-<div class="flex justify-center mt-6 space-x-2">
+<div class="flex justify-center mt-4 gap-2">
 
 <?php for($i = 1; $i <= $total_page; $i++): ?>
 

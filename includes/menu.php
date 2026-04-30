@@ -177,7 +177,8 @@ case "hapus_pengumuman":
     if($role == "admin"){
         include "admin/hapus_pengumuman.php";
     } else {
-        echo "<script>alert('Akses ditolak');history.back();</script>";
+        header("Location: index.php?error=akses");
+        exit;
     }
 break;
 
@@ -229,7 +230,8 @@ case "hapus_user":
     if($role == "admin"){
         include "admin/hapus_user.php";
     } else {
-        echo "<script>alert('Akses ditolak');history.back();</script>";
+        header("Location: index.php?error=akses");
+        exit;
     }
 break;
 case "kelola_mata_kuliah":

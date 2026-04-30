@@ -39,7 +39,8 @@ if(isset($_POST['update_mk'])){
         WHERE id_mk='$id'
     ");
 
-    echo "<script>alert('MK berhasil diupdate');location='';</script>";
+    header("Location: index.php?menu=kelola_mata_kuliah&msg=update");
+    exit;
 }
 
 /* ================= TAMBAH RELASI ================= */
@@ -49,7 +50,8 @@ if(isset($_POST['tambah_relasi'])){
     $semester  = $_POST['semester'];
 
     if(empty($prodi_ids)){
-        echo "<script>alert('Pilih minimal 1 prodi');</script>";
+        header("Location: index.php?menu=edit_mata_kuliah&id=$id&error=prodi");
+        exit;
     } else {
 
         foreach($prodi_ids as $p){
@@ -70,7 +72,8 @@ if(isset($_POST['tambah_relasi'])){
             }
         }
 
-        echo "<script>alert('Relasi ditambahkan');location='';</script>";
+        header("Location: index.php?menu=edit_mata_kuliah&id=$id&msg=relasi");
+        exit;
     }
 }
 
@@ -82,7 +85,8 @@ if(isset($_GET['hapus_relasi'])){
         DELETE FROM mk_prodi WHERE id_mk_prodi='$id_relasi'
     ");
 
-    echo "<script>location='index.php?menu=edit_mata_kuliah&id=$id';</script>";
+    header("Location: ../index.php?menu=edit_mata_kuliah&id=$id&notif=update_sukses");
+    exit;
 }
 ?>
 

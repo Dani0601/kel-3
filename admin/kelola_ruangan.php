@@ -16,7 +16,7 @@ if($_SESSION['role'] != 'admin'){
             Kelola Gedung & Ruangan
         </h2>
         <p class="text-sm text-gray-500">
-            Manajemen gedung dan ruangan realtime
+            Manajemen gedung dan ruangan secara realtime
         </p>
     </div>
 
@@ -52,6 +52,13 @@ if($_SESSION['role'] != 'admin'){
 </div>
 </div>
 
+
+<!-- ================= RUANGAN ================= -->
+<div class="bg-white rounded-2xl shadow overflow-hidden">
+<div class="p-4 border-b">
+<h3 class="font-semibold text-gray-700">Data Ruangan</h3>
+</div>
+
 <!-- ================= FILTER ================= -->
 <div class="bg-white p-4 rounded-2xl shadow flex flex-wrap gap-3">
 
@@ -75,12 +82,6 @@ class="border rounded px-3 py-2 w-60">
 
 </div>
 
-<!-- ================= RUANGAN ================= -->
-<div class="bg-white rounded-2xl shadow overflow-hidden">
-<div class="p-4 border-b">
-<h3 class="font-semibold text-gray-700">Data Ruangan</h3>
-</div>
-
 <div class="overflow-x-auto">
 <table class="min-w-full text-sm">
 
@@ -99,7 +100,7 @@ class="border rounded px-3 py-2 w-60">
 </div>
 </div>
 
-<div id="pagination" class="flex gap-2"></div>
+<div id="pagination" class="flex justify-center gap-2 mt-4"></div>
 
 </div>
 
@@ -142,11 +143,11 @@ ${g.jumlah_lantai}
 </td>
 
 <td class="px-4 py-3 text-center">
-<a href="admin/hapus_gedung.php?id=${g.id_gedung}"
-onclick="return confirm('Hapus?')"
+<button 
+onclick="openDeleteModal('admin/hapus_gedung.php?id=${g.id_gedung}', 'Hapus Gedung?')"
 class="bg-red-100 text-red-600 px-3 py-1 rounded-lg text-xs hover:bg-red-200 transition">
 Hapus
-</a>
+</button>
 </td>
 
 </tr>

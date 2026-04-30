@@ -101,7 +101,7 @@ while ($d = mysqli_fetch_assoc($q4)) {
 <!-- HEADER -->
 <div class="mb-6">
 <h2 class="text-2xl font-bold text-gray-800">Dashboard Admin</h2>
-<p class="text-sm text-gray-500">Statistik penggunaan ruangan</p>
+<p class="text-sm text-gray-500">Statistik penggunaan ruangan dan aktivitas sistem secara keseluruhan</p>
 </div>
 
 <!-- CARD -->

@@ -37,21 +37,13 @@ LIMIT $limit OFFSET $offset
 ");
 
 /* ========================
-   TOTAL DATA
-======================== */
-$totalData = mysqli_fetch_assoc(mysqli_query($conn, "
-SELECT COUNT(*) as total FROM users $where
-"))['total'];
-
-$totalPage = ceil($totalData / $limit);
-
-/* ========================
    TOTAL USER (FILTER)
 ======================== */
 $total_user = mysqli_fetch_assoc(mysqli_query($conn,"
-SELECT COUNT(*) as total FROM users
-$where
+SELECT COUNT(*) as total FROM users $where
 "))['total'];
+
+$totalPage = ceil($total_user / $limit);
 
 /* ========================
    CHART ROLE (FIXED ORDER + COLOR)
@@ -100,7 +92,7 @@ foreach ($roles as $r) {
 <div class="flex justify-between items-center mb-6">
     <div>
         <h2 class="text-2xl font-bold">Kelola User</h2>
-        <p class="text-sm text-gray-500">Manajemen pengguna sistem</p>
+        <p class="text-sm text-gray-500">Manajemen data pengguna, role, dan akses sistem</p>
     </div>
 
     <a href="index.php?menu=tambah_user"
@@ -202,8 +194,8 @@ class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded text-xs hover:bg-yellow-2
 Edit
 </a>
 
-<a href="index.php?menu=hapus_user&id=<?= $u['id_user'] ?>"
-onclick="return confirm('Yakin hapus?')"
+<a href="#"
+onclick="openDeleteModal('index.php?menu=hapus_user&id=<?= $u['id_user'] ?>', 'Hapus User?')"
 class="bg-red-100 text-red-600 px-3 py-1 rounded-lg text-xs hover:bg-red-200 transition">
 Hapus
 </a>
@@ -220,7 +212,7 @@ Hapus
 </div>
 </div>
 <!-- PAGINATION -->
-<div class="mt-4 flex gap-2">
+<div class="flex justify-center mt-4 gap-2">
 <?php for($i=1;$i<=$totalPage;$i++): ?>
 <a href="index.php?menu=kelola_user&page=<?= $i ?>&cari=<?= $cari ?>&role=<?= $role_filter ?>"
    class="px-3 py-1 border rounded <?= $i==$page?'bg-blue-500 text-white':'' ?>">

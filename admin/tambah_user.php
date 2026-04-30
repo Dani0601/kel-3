@@ -17,7 +17,7 @@ if (isset($_POST['simpan'])) {
     // VALIDASI DASAR
     // ========================
     if (empty($username) || empty($password_plain) || empty($role)) {
-        echo "<script>alert('Semua data wajib diisi');history.back();</script>";
+        header("Location: index.php?menu=tambah_user&error=kosong");
         exit;
     }
 
@@ -26,7 +26,7 @@ if (isset($_POST['simpan'])) {
     // ========================
     $allowed_role = ['admin', 'dosen', 'mahasiswa'];
     if (!in_array($role, $allowed_role)) {
-        echo "<script>alert('Role tidak valid');history.back();</script>";
+        header("Location: index.php?menu=tambah_user&error=role");
         exit;
     }
 
@@ -40,7 +40,7 @@ if (isset($_POST['simpan'])) {
     // ========================
     $cek = mysqli_query($conn, "SELECT id_user FROM users WHERE username='$username'");
     if (mysqli_num_rows($cek) > 0) {
-        echo "<script>alert('Username sudah digunakan!');history.back();</script>";
+        header("Location: index.php?menu=tambah_user&error=username");
         exit;
     }
 
@@ -61,15 +61,11 @@ if (isset($_POST['simpan'])) {
     // HASIL
     // ========================
     if ($sql) {
-        echo "<script>
-        alert('User berhasil ditambahkan');
-        location='index.php?menu=kelola_user';
-        </script>";
+        header("Location: index.php?menu=kelola_user&msg=tambah");
+        exit;
     } else {
-        echo "<script>
-        alert('Gagal menambahkan user');
-        history.back();
-        </script>";
+        header("Location: index.php?menu=tambah_user&error=gagal");
+        exit;
     }
 }
 ?>
