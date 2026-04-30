@@ -1,19 +1,15 @@
 # 🚀 K3 Web Management System
 
-> Modern Web Management System built with PHP Native, structured for
-> scalability, collaboration, and real-world deployment.
+> Modern Web Management System built with PHP Native, structured for scalability, collaboration, and real-world deployment.
 
-```{=html}
 <p align="center">
-```
-`<img src="https://img.shields.io/badge/PHP-8.x-blue?logo=php">`{=html}
-`<img src="https://img.shields.io/badge/Composer-Dependency_Manager-brown?logo=composer">`{=html}
-`<img src="https://img.shields.io/badge/Status-Active-success">`{=html}
-`<img src="https://img.shields.io/badge/Maintained-Yes-brightgreen">`{=html}
-`<img src="https://img.shields.io/badge/License-MIT-lightgrey">`{=html}
-```{=html}
+  <img src="https://img.shields.io/badge/PHP-8.x-blue?logo=php">
+  <img src="https://img.shields.io/badge/Composer-Dependency_Manager-brown?logo=composer">
+  <img src="https://img.shields.io/badge/Status-Active-success">
+  <img src="https://img.shields.io/badge/Maintained-Yes-brightgreen">
+  <img src="https://img.shields.io/badge/License-MIT-lightgrey">
 </p>
-```
+
 
 ------------------------------------------------------------------------
 
