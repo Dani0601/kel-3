@@ -29,6 +29,14 @@ if(isset($_POST['simpan'])){
     alert('Pengumuman berhasil ditambahkan');
     location='index.php?menu=kelola_pengumuman';
     </script>";
+
+    include "admin/tambah_notifikasi.php";
+
+    tambah_notifikasi(
+        $conn,
+        "Pengumuman: ".$_POST['judul'],
+        substr($_POST['isi'], 0, 100) . "..."
+    );
 }
 ?>
 

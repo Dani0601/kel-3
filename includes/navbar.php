@@ -39,10 +39,6 @@ if($id_user){
 <!-- MENU DESKTOP -->
 <div class="hidden md:flex items-center space-x-8">
 
-<a href="index.php" class="text-gray-700 hover:text-blue-600 font-medium transition duration-200">
-Beranda
-</a>
-
 <!-- MANAJEMEN -->
 <div class="relative" x-data="{dropdown:false}">
 <button @click="dropdown=!dropdown"

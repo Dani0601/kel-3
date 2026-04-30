@@ -154,66 +154,71 @@ foreach ($roles as $r) {
 </div>
 
 <!-- TABLE -->
-<div class="bg-white rounded shadow overflow-hidden">
+<div class="bg-white rounded-2xl shadow overflow-hidden">
+    <div class="p-4 border-b">
+      <h3 class="font-semibold text-gray-700">Data User</h3>
+   </div>
 
-<table class="w-full text-sm">
-<thead class="bg-gray-100">
+<div class="overflow-x-auto">
+<table class="min-w-full text-sm">
+
+<thead class="bg-gray-100 text-xs uppercase text-gray-600">
 <tr>
-<th class="p-3">No</th>
-<th class="p-3">Username</th>
-<th class="p-3">Role</th>
-<th class="p-3 text-center">Aksi</th>
+<th class="px-4 py-3">No</th>
+<th class="px-4 py-3">Username</th>
+<th class="px-4 py-3">Role</th>
+<th class="px-4 py-3 text-center">Aksi</th>
 </tr>
 </thead>
 
-<tbody>
+<tbody class="divide-y text-gray-700">
 
-<?php $no = $offset + 1; ?>
+<?php $no=$offset+1; ?>
+<?php while($u = mysqli_fetch_assoc($data)) { ?>
 
-<?php if (mysqli_num_rows($data) > 0) { ?>
-<?php while ($u = mysqli_fetch_assoc($data)) { ?>
+<tr class="hover:bg-gray-50 transition">
 
-<?php
-$roleClass = match($u['role']) {
-    'admin' => 'bg-blue-200',
-    'dosen' => 'bg-red-200',
-    'mahasiswa' => 'bg-orange-200',
-    default => 'bg-gray-200'
-};
-?>
+<td class="px-4 py-3"><?= $no++ ?></td>
 
-<tr class="border-b">
+<td class="px-4 py-3 font-medium">
+<?= htmlspecialchars($u['username']) ?>
+</td>
 
-<td class="p-3"><?= $no++ ?></td>
-<td class="p-3"><?= htmlspecialchars($u['username']) ?></td>
-
-<td class="p-3">
-<span class="px-2 py-1 rounded <?= $roleClass ?>">
+<td class="px-4 py-3">
+<span class="px-2 py-1 rounded-full text-xs 
+<?= $u['role']=='admin'?'bg-blue-100 text-blue-600':'' ?>
+<?= $u['role']=='dosen'?'bg-red-100 text-red-600':'' ?>
+<?= $u['role']=='mahasiswa'?'bg-orange-100 text-orange-600':'' ?>">
 <?= $u['role'] ?>
 </span>
 </td>
 
 <td class="p-3 text-center">
-<a href="index.php?menu=edit_user&id=<?= $u['id_user'] ?>" class="text-blue-600">Edit</a> |
-<a href="index.php?menu=hapus_user&id=<?= $u['id_user'] ?>" class="text-red-500" onclick="return confirm('Yakin hapus?')">Hapus</a>
+<div class="flex justify-center gap-2">
+
+<a href="index.php?menu=edit_user&id=<?= $u['id_user'] ?>"
+class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded text-xs hover:bg-yellow-200 transition">
+
+Edit
+</a>
+
+<a href="index.php?menu=hapus_user&id=<?= $u['id_user'] ?>"
+onclick="return confirm('Yakin hapus?')"
+class="bg-red-100 text-red-600 px-3 py-1 rounded-lg text-xs hover:bg-red-200 transition">
+Hapus
+</a>
+
+</div>
 </td>
 
 </tr>
 
-<?php } ?>
-<?php } else { ?>
-<tr>
-<td colspan="4" class="text-center p-6 text-gray-400">
-Tidak ada data
-</td>
-</tr>
 <?php } ?>
 
 </tbody>
 </table>
-
 </div>
-
+</div>
 <!-- PAGINATION -->
 <div class="mt-4 flex gap-2">
 <?php for($i=1;$i<=$totalPage;$i++): ?>

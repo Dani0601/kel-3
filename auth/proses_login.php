@@ -1,17 +1,11 @@
 <?php
-
 session_start();
 require_once "../config/koneksi.php";
 
-/* validasi captcha */
+/* VALIDASI CAPTCHA */
 if($_POST['captcha'] != $_SESSION['captcha']){
-
-    echo "<script>
-    alert('Captcha salah');
-    window.location='login.php';
-    </script>";
+    header("Location: login.php?error=captcha");
     exit();
-
 }
 
 $username = mysqli_real_escape_string($conn,$_POST['username']);
@@ -29,16 +23,11 @@ if($data){
     $_SESSION['role'] = $data['role'];
     $_SESSION['id_user'] = $data['id_user'];
 
-    header("Location: login.php?success=1");
-exit();
+    header("Location: login.php?success=1&role=".$data['role']);
+    exit();
 
 }else{
-
-    echo "<script>
-    alert('Username atau password salah');
-    window.location='login.php';
-    </script>";
-
+    header("Location: login.php?error=login");
+    exit();
 }
-
 ?>

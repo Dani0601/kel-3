@@ -145,58 +145,69 @@ class="bg-gray-400 text-white px-4 py-2 rounded">Reset</a>
 </div>
 
 <!-- TABLE -->
-<div class="bg-white rounded shadow overflow-hidden">
+<div class="bg-white rounded-2xl shadow overflow-hidden">
+   <div class="p-4 border-b">
+      <h3 class="font-semibold text-gray-700">Data Pengumuman</h3>
+   </div>
 
-<table class="w-full text-sm">
+<div class="overflow-x-auto">
+<table class="min-w-full text-sm">
 
-<thead class="bg-gray-100">
+<thead class="bg-gray-100 text-xs uppercase text-gray-600">
 <tr>
-<th class="p-3">Tanggal</th>
-<th class="p-3">Judul</th>
-<th class="p-3">Isi</th>
-<th class="p-3">Pembuat</th>
-<th class="p-3 text-center">Aksi</th>
+<th class="px-4 py-3">Tanggal</th>
+<th class="px-4 py-3">Judul</th>
+<th class="px-4 py-3">Isi</th>
+<th class="px-4 py-3">Pembuat</th>
+<th class="px-4 py-3 text-center">Aksi</th>
 </tr>
 </thead>
 
-<tbody>
+<tbody class="divide-y text-gray-700">
 
-<?php if(mysqli_num_rows($data) > 0){ ?>
 <?php while($row = mysqli_fetch_assoc($data)) { ?>
 
-<tr class="border-b">
+<tr class="hover:bg-gray-50 transition">
 
-<td class="p-3"><?= $row['tanggal'] ?></td>
-<td class="p-3 font-semibold"><?= htmlspecialchars($row['judul']) ?></td>
-<td class="p-3"><?= htmlspecialchars(substr($row['isi'],0,80)) ?>...</td>
-<td class="p-3"><?= $row['username'] ?? '-' ?></td>
+<td class="px-4 py-3"><?= $row['tanggal'] ?></td>
+
+<td class="px-4 py-3 font-semibold">
+<?= htmlspecialchars($row['judul']) ?>
+</td>
+
+<td class="px-4 py-3 text-gray-600">
+<?= htmlspecialchars(substr($row['isi'],0,80)) ?>...
+</td>
+
+<td class="px-4 py-3">
+<?= $row['username'] ?? '-' ?>
+</td>
 
 <td class="p-3 text-center">
-<a href="index.php?menu=edit_pengumuman&id=<?= $row['id_pengumuman'] ?>">Edit</a> |
+<div class="flex justify-center gap-2">
+
+<a href="index.php?menu=edit_pengumuman&id=<?= $row['id_pengumuman'] ?>"
+class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded text-xs hover:bg-yellow-200 transition">
+Edit
+</a>
+
 <a href="index.php?menu=hapus_pengumuman&id=<?= $row['id_pengumuman'] ?>"
-onclick="return confirm('Hapus pengumuman ini?')"
-class="text-red-500">
+onclick="return confirm('Yakin hapus?')"
+class="bg-red-100 text-red-600 px-3 py-1 rounded-lg text-xs hover:bg-red-200 transition">
 Hapus
 </a>
+
+</div>
 </td>
 
-</tr>
 
-<?php } ?>
-<?php } else { ?>
-
-<tr>
-<td colspan="5" class="text-center p-6 text-gray-400">
-Tidak ada data
-</td>
 </tr>
 
 <?php } ?>
 
 </tbody>
-
 </table>
-
+</div>
 </div>
 
 <!-- PAGINATION -->

@@ -63,9 +63,13 @@ FROM laporan_fasilitas
 ")->fetch_assoc();
 ?>
 
-<div class="p-6">
+<div class="p-6 space-y-6">
 
-<h2 class="text-xl font-bold mb-4">Kelola Laporan</h2>
+<div>
+    <h2 class="text-2xl font-bold text-gray-800">
+        Kelola Laporan
+    </h2>
+</div>
 
 <!-- ================= STATISTIK ================= -->
 <div class="grid md:grid-cols-3 gap-6 mb-6">
@@ -117,88 +121,63 @@ Reset
 </form>
 
 <!-- ================= TABLE ================= -->
-<div class="bg-white shadow rounded-lg overflow-hidden">
+<div class="bg-white rounded-2xl shadow overflow-hidden">
+    <div class="p-4 border-b">
+        <h3 class="font-semibold text-gray-700">Data Laporan</h3>
+    </div>
 
-<table class="w-full text-sm">
+<div class="overflow-x-auto">
+<table class="min-w-full text-sm">
 
-<thead class="bg-gray-200">
+<thead class="bg-gray-100 text-xs uppercase text-gray-600">
 <tr>
-<th class="p-2">No</th>
-<th>Judul</th>
-<th>User</th>
-<th>Ruangan</th>
-<th>Status</th>
-<th>Aksi</th>
+<th class="px-4 py-3">No</th>
+<th class="px-4 py-3">Judul</th>
+<th class="px-4 py-3">User</th>
+<th class="px-4 py-3">Ruangan</th>
+<th class="px-4 py-3">Status</th>
+<th class="px-4 py-3 text-center">Aksi</th>
 </tr>
 </thead>
 
-<tbody>
+<tbody class="divide-y text-gray-700">
 
-<?php $no = $offset + 1; ?>
-
-<?php if($data->num_rows > 0){ ?>
+<?php $no=$offset+1; ?>
 <?php while($d = $data->fetch_assoc()){ ?>
 
-<tr class="border-t">
+<tr class="hover:bg-gray-50 transition">
 
-<td class="p-2"><?= $no++ ?></td>
-<td><?= htmlspecialchars($d['judul']) ?></td>
-<td><?= $d['username'] ?></td>
-<td><?= $d['nama_ruangan'] ?></td>
+<td class="px-4 py-3"><?= $no++ ?></td>
 
-<td>
-<span class="
-<?= $d['status']=='pending'?'text-yellow-500':'' ?>
-<?= $d['status']=='proses'?'text-blue-500':'' ?>
-<?= $d['status']=='selesai'?'text-green-500':'' ?>
-">
+<td class="px-4 py-3 font-medium">
+<?= htmlspecialchars($d['judul']) ?>
+</td>
+
+<td class="px-4 py-3"><?= $d['username'] ?></td>
+<td class="px-4 py-3"><?= $d['nama_ruangan'] ?></td>
+
+<td class="px-4 py-3">
+<span class="text-xs px-2 py-1 rounded-full
+<?= $d['status']=='pending'?'bg-yellow-100 text-yellow-600':'' ?>
+<?= $d['status']=='proses'?'bg-blue-100 text-blue-600':'' ?>
+<?= $d['status']=='selesai'?'bg-green-100 text-green-600':'' ?>">
 <?= $d['status'] ?>
 </span>
 </td>
 
-<td class="space-x-2">
-
-<a href="?menu=detail_laporan&id=<?= $d['id_laporan'] ?>"
-class="text-green-500">Detail</a>
-
-<button 
-onclick="openEditModal(
-'<?= $d['id_laporan'] ?>',
-'<?= htmlspecialchars($d['judul']) ?>',
-'<?= htmlspecialchars($d['deskripsi']) ?>',
-'<?= $d['status'] ?>'
-)"
-class="text-blue-500">
-Edit
-</button>
-
-<a href="admin/hapus_laporan.php?id=<?= $d['id_laporan'] ?>"
-onclick="return confirm('Hapus data?')"
-class="text-red-500">
-Hapus
-</a>
-
+<td class="px-4 py-3 text-center">
+<a href="#" class="text-blue-600">Edit</a> |
+<a href="#" class="text-red-500">Hapus</a>
 </td>
 
-</tr>
-
-<?php } ?>
-<?php } else { ?>
-
-<tr>
-<td colspan="6" class="text-center p-6 text-gray-400">
-Tidak ada data
-</td>
 </tr>
 
 <?php } ?>
 
 </tbody>
-
 </table>
-
 </div>
-
+</div>
 <!-- ================= PAGINATION ================= -->
 <div class="mt-4 flex gap-2">
 <?php for($i=1;$i<=$totalPage;$i++): ?>

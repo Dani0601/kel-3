@@ -1,4 +1,4 @@
-<?php
+<?php 
 require_once __DIR__ . '/../config/koneksi.php';
 
 if($_SESSION['role'] != 'admin'){
@@ -22,30 +22,32 @@ if($_SESSION['role'] != 'admin'){
 
     <a href="index.php?menu=tambah_gedung"
     class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl shadow flex items-center gap-2">
-
         <span class="text-lg">+</span>
         Tambah Gedung
-
     </a>
 
 </div>
+
 <!-- ================= GEDUNG ================= -->
 <div class="bg-white rounded-2xl shadow overflow-hidden">
-<div class="p-4 border-b">
-<h3 class="font-semibold">Data Gedung</h3>
+<div class="p-4 border-b flex justify-between items-center">
+<h3 class="font-semibold text-gray-700">Data Gedung</h3>
 </div>
 
 <div class="overflow-x-auto">
 <table class="min-w-full text-sm">
-<thead class="bg-gray-50 text-xs uppercase">
+
+<thead class="bg-gray-100 text-xs uppercase text-gray-600">
 <tr>
-<th class="px-4 py-3">ID</th>
-<th class="px-4 py-3 text-center">Nama Gedung</th>
-<th class="px-4 py-3 text-center">Lantai</th>
-<th class="px-4 py-3 text-center">Aksi</th>
+<th class="px-4 py-3 text-center w-16">ID</th>
+<th class="px-4 py-3 text-left">Nama Gedung</th>
+<th class="px-4 py-3 text-center w-24">Lantai</th>
+<th class="px-4 py-3 text-center w-32">Aksi</th>
 </tr>
 </thead>
-<tbody id="gedungBody" class="divide-y"></tbody>
+
+<tbody id="gedungBody" class="divide-y text-gray-700"></tbody>
+
 </table>
 </div>
 </div>
@@ -73,43 +75,26 @@ class="border rounded px-3 py-2 w-60">
 
 </div>
 
-<!-- ================= CHART ================= -->
-<div class="grid md:grid-cols-3 gap-6">
-
-<div class="bg-white p-4 rounded-2xl shadow">
-<h4 class="font-semibold mb-2">Ruangan per Gedung</h4>
-<canvas id="chartGedung"></canvas>
-</div>
-
-<div class="bg-white p-4 rounded-2xl shadow">
-<h4 class="font-semibold mb-2">Kapasitas</h4>
-<canvas id="chartKap"></canvas>
-</div>
-
-<div class="bg-white p-4 rounded-2xl shadow">
-<h4 class="font-semibold mb-2">Distribusi Gedung</h4>
-<canvas id="chartPie"></canvas>
-</div>
-
-</div>
-
 <!-- ================= RUANGAN ================= -->
 <div class="bg-white rounded-2xl shadow overflow-hidden">
 <div class="p-4 border-b">
-<h3 class="font-semibold">Data Ruangan</h3>
+<h3 class="font-semibold text-gray-700">Data Ruangan</h3>
 </div>
 
 <div class="overflow-x-auto">
 <table class="min-w-full text-sm">
-<thead class="bg-gray-50 text-xs uppercase">
+
+<thead class="bg-gray-100 text-xs uppercase text-gray-600">
 <tr>
-<th class="px-4 py-3">Gedung</th>
-<th class="px-4 py-3 text-center">Lantai</th>
-<th class="px-4 py-3">Ruangan</th>
-<th class="px-4 py-3 text-center">Kapasitas</th>
+<th class="px-4 py-3 text-left">Gedung</th>
+<th class="px-4 py-3 text-center w-24">Lantai</th>
+<th class="px-4 py-3 text-left">Ruangan</th>
+<th class="px-4 py-3 text-center w-32">Kapasitas</th>
 </tr>
 </thead>
-<tbody id="tbody" class="divide-y"></tbody>
+
+<tbody id="tbody" class="divide-y text-gray-700"></tbody>
+
 </table>
 </div>
 </div>
@@ -118,11 +103,8 @@ class="border rounded px-3 py-2 w-60">
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
 let page=1;
-let chartGedung,chartKap,chartPie;
 
 /* ================= LOAD GEDUNG ================= */
 function loadGedung(){
@@ -135,21 +117,36 @@ let opt='<option value="">Semua Gedung</option>';
 
 data.forEach(g=>{
 html+=`
-<tr class="hover:bg-gray-50">
+<tr class="hover:bg-gray-50 transition">
 
-<td class="px-4 py-3">${g.id_gedung}</td>
-
-<td class="text-center">
-<input value="${g.nama_gedung}" id="nama_${g.id_gedung}" class="border p-1 rounded w-32">
-<button onclick="updateGedung(${g.id_gedung})" class="text-blue-500">Save</button>
+<td class="px-4 py-3 text-center font-medium text-gray-600">
+${g.id_gedung}
 </td>
 
-<td class="text-center">
-<span class="bg-blue-100 px-2 py-1 rounded text-xs">${g.jumlah_lantai}</span>
+<td class="px-4 py-3">
+<div class="flex items-center gap-2">
+<input value="${g.nama_gedung}" id="nama_${g.id_gedung}"
+class="border px-2 py-1 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none w-full">
+
+<button onclick="updateGedung(${g.id_gedung})"
+class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-xs transition">
+Save
+</button>
+</div>
 </td>
 
-<td class="text-center">
-<a href="admin/hapus_gedung.php?id=${g.id_gedung}" onclick="return confirm('Hapus?')" class="text-red-500">Hapus</a>
+<td class="px-4 py-3 text-center">
+<span class="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs font-medium">
+${g.jumlah_lantai}
+</span>
+</td>
+
+<td class="px-4 py-3 text-center">
+<a href="admin/hapus_gedung.php?id=${g.id_gedung}"
+onclick="return confirm('Hapus?')"
+class="bg-red-100 text-red-600 px-3 py-1 rounded-lg text-xs hover:bg-red-200 transition">
+Hapus
+</a>
 </td>
 
 </tr>
@@ -172,8 +169,7 @@ method:'POST',
 headers:{'Content-Type':'application/x-www-form-urlencoded'},
 body:`id=${id}&nama=${encodeURIComponent(nama)}`
 })
-.then(res=>res.text())
-.then(alert);
+.then(()=>alert("Berhasil disimpan"));
 }
 
 /* ================= LOAD DATA ================= */
@@ -191,19 +187,41 @@ fetch(`admin/ajax_ruangan.php?gedung=${g}&lantai=${l}&search=${s}&page=${page}&l
 let html='';
 
 if(res.data.length===0){
-html=`<tr><td colspan="4" class="text-center p-4 text-gray-400">Tidak ada data</td></tr>`;
+html=`
+<tr>
+<td colspan="4" class="text-center py-8 text-gray-400">
+<div class="flex flex-col items-center gap-2">
+<span class="text-2xl">📭</span>
+<span>Tidak ada data</span>
+</div>
+</td>
+</tr>
+`;
 }else{
 res.data.forEach(r=>{
 html+=`
-<tr class="hover:bg-gray-50">
-<td>${r.nama_gedung}</td>
-<td class="text-center">${r.lantai}</td>
-<td class="font-semibold">${r.nama_ruangan}</td>
-<td class="text-center">
+<tr class="hover:bg-gray-50 transition">
+
+<td class="px-4 py-3 font-medium text-gray-700">
+${r.nama_gedung}
+</td>
+
+<td class="px-4 py-3 text-center">
+<span class="bg-gray-100 px-2 py-1 rounded-full text-xs">
+${r.lantai}
+</span>
+</td>
+
+<td class="px-4 py-3 font-semibold">
+${r.nama_ruangan}
+</td>
+
+<td class="px-4 py-3 text-center">
 <input type="number" value="${r.kapasitas}"
 onchange="updateKapasitas(${r.id_ruangan},this.value)"
-class="border w-16 text-center">
+class="border px-2 py-1 rounded-lg text-center w-20 focus:ring-2 focus:ring-blue-400 outline-none">
 </td>
+
 </tr>
 `;
 });
@@ -216,13 +234,10 @@ let totalPage=Math.ceil(res.total/limit);
 let pag='';
 
 for(let i=1;i<=totalPage;i++){
-pag+=`<button onclick="goPage(${i})" class="px-3 py-1 border ${i==page?'bg-blue-500 text-white':''}">${i}</button>`;
+pag+=`<button onclick="goPage(${i})" class="px-3 py-1 rounded-lg border hover:bg-blue-100 transition ${i==page?'bg-blue-500 text-white':''}">${i}</button>`;
 }
 
 pagination.innerHTML=pag;
-
-/* UPDATE CHART */
-updateChart(res);
 
 });
 }
@@ -233,38 +248,6 @@ fetch('admin/update_ruangan.php',{
 method:'POST',
 headers:{'Content-Type':'application/x-www-form-urlencoded'},
 body:`id=${id}&kapasitas=${val}`
-});
-}
-
-/* ================= CHART ================= */
-function updateChart(res){
-
-if(chartGedung) chartGedung.destroy();
-if(chartKap) chartKap.destroy();
-if(chartPie) chartPie.destroy();
-
-chartGedung=new Chart(document.getElementById('chartGedung'),{
-type:'bar',
-data:{
-labels:res.chartGedung.label,
-datasets:[{data:res.chartGedung.data}]
-}
-});
-
-chartKap=new Chart(document.getElementById('chartKap'),{
-type:'line',
-data:{
-labels:res.chartKap.label,
-datasets:[{data:res.chartKap.data}]
-}
-});
-
-chartPie=new Chart(document.getElementById('chartPie'),{
-type:'pie',
-data:{
-labels:res.chartPie.label,
-datasets:[{data:res.chartPie.data}]
-}
 });
 }
 

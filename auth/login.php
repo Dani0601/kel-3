@@ -156,6 +156,18 @@
 
 <h2 class="text-white text-2xl text-center mb-4">Masuk Sistem</h2>
 
+<?php if(isset($_GET['error'])): ?>
+    <div class="mb-4 px-4 py-3 rounded-xl bg-red-500/20 text-red-100 text-sm border border-red-300/30 backdrop-blur-md">
+        <?php 
+        if($_GET['error'] == 'captcha'){
+            echo "Captcha salah!";
+        } elseif($_GET['error'] == 'login'){
+            echo "Username atau password salah!";
+        }
+        ?>
+    </div>
+<?php endif; ?>
+
 <form action="proses_login.php" method="POST" class="space-y-4">
 
 <input type="text" id="username" name="username"
@@ -206,9 +218,50 @@ document.addEventListener("mousemove", e=>{
     eye2.setAttribute("cy", 105 + y);
 });
 
-/* REAKSI INPUT */
-username.onfocus = ()=> mouth.setAttribute("d","M70 120 Q100 140 130 120");
-password.onfocus = ()=> mouth.setAttribute("d","M70 125 Q100 115 130 125");
+/* STATE WAJAH */
+function normalFace(){
+    // senyum normal
+    mouth.setAttribute("d","M70 135 Q100 155 130 135");
+
+    // mata normal
+    eye1.setAttribute("r",8);
+    eye2.setAttribute("r",8);
+}
+
+function happyTop(){
+    // ✅ SENYUM (bukan kebalik)
+    mouth.setAttribute("d","M70 130 Q100 160 130 130");
+
+    // ✅ mata merem
+    eye1.setAttribute("r",2);
+    eye2.setAttribute("r",2);
+}
+
+function sadFace(){
+    // ✅ mulut sedih (melengkung ke bawah)
+    mouth.setAttribute("d","M70 150 Q100 120 130 150");
+
+    // ✅ mata tetap BULAT (tidak berubah)
+    eye1.setAttribute("r",8);
+    eye2.setAttribute("r",8);
+}
+
+/* INPUT BEHAVIOR */
+
+// username → tidak berubah
+username.onfocus = ()=> {
+    normalFace();
+};
+
+// password → mata merem + senyum atas
+password.onfocus = ()=> {
+    happyTop();
+};
+
+/* BALIK KE NORMAL KALAU KELUAR INPUT */
+username.onblur = normalFace;
+password.onblur = normalFace;
+
 
 /* LOGIN SUCCESS */
 const urlParams = new URLSearchParams(window.location.search);
@@ -233,11 +286,17 @@ if(urlParams.get('success')){
     },500);
 
     // redirect
+    const role = urlParams.get('role');
+
     setTimeout(()=>{
         document.body.classList.add("fade-out");
 
         setTimeout(()=>{
-            window.location.href = "../index.php";
+            if(role === "admin"){
+                window.location.href = "../index.php?menu=dashboard_admin";
+            } else {
+                window.location.href = "../index.php";
+            }
         },600);
 
     },1200);

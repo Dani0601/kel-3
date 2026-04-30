@@ -2,6 +2,12 @@
 include "admin/tambah_notifikasi.php";
 include "config/koneksi.php";
 
+$conn->query("
+DELETE FROM notifikasi
+WHERE status='dihapus'
+AND created_at < NOW() - INTERVAL 30 DAY
+");
+
 if(isset($_GET['hapus'])){
     $id = $_GET['hapus'];
 
@@ -17,6 +23,21 @@ if(isset($_GET['hapus'])){
     </script>";
 }
 
+if(isset($_GET['restore'])){
+    $id = $_GET['restore'];
+
+    $conn->query("
+        UPDATE notifikasi 
+        SET status = 'aktif'
+        WHERE id_notifikasi = '$id'
+    ");
+
+    echo "<script>
+        alert('Notifikasi dikembalikan');
+        location='index.php?menu=notifikasi';
+    </script>";
+}
+
 /* =========================
    PAGINATION SETTING
 ========================= */
@@ -28,15 +49,20 @@ $start = ($page - 1) * $limit;
    SEARCH
 ========================= */
 $cari = $_GET['cari'] ?? '';
+$status_filter = $_GET['status'] ?? 'semua';
 $cari_safe = mysqli_real_escape_string($conn, $cari);
 
 /* =========================
    QUERY DATA
 ========================= */
-$sql = "
-SELECT * FROM notifikasi 
-WHERE 1=1
-";
+$sql = "SELECT * FROM notifikasi WHERE 1=1";
+
+if($status_filter == 'aktif'){
+    $sql .= " AND status='aktif'";
+}
+else if($status_filter == 'dihapus'){
+    $sql .= " AND status='dihapus'";
+}
 
 if($cari != ''){
     $sql .= " AND (judul LIKE '%$cari_safe%' OR pesan LIKE '%$cari_safe%')";
@@ -54,6 +80,14 @@ $total_data = $conn->query($sql_count)->num_rows;
 $total_page = ceil($total_data / $limit);
 
 ?>
+
+<div class="p-6 space-y-6">
+
+<div>
+    <h2 class="text-2xl font-bold text-gray-800">
+        Kelola Notifikasi
+    </h2>
+</div>
 
 <div class="max-w-4xl mx-auto mt-6">
 
@@ -106,6 +140,12 @@ if(isset($_POST['kirim'])){
         value="<?= htmlspecialchars($cari) ?>"
         class="border p-2 rounded w-full">
 
+    <select name="status" class="border p-2 rounded">
+        <option value="semua" <?= $status_filter=='semua'?'selected':'' ?>>Semua</option>
+        <option value="aktif" <?= $status_filter=='aktif'?'selected':'' ?>>Aktif</option>
+        <option value="dihapus" <?= $status_filter=='dihapus'?'selected':'' ?>>Dihapus</option>
+    </select>
+
     <button class="bg-green-500 text-white px-4 py-2 rounded">
         Cari
     </button>
@@ -127,17 +167,21 @@ if(isset($_POST['kirim'])){
 
 <?php while($d = $data->fetch_assoc()): ?>
 
-<div class="border rounded-xl p-5">
+<div class="border rounded-xl p-5 hover:shadow-md transition">
 
-    <div class="flex justify-between">
+    <div class="flex justify-between items-start">
 
         <div>
-            <h3 class="font-semibold"><?= $d['judul'] ?></h3>
-            <p class="text-sm text-gray-600">
+            <h3 class="font-semibold text-gray-800">
+                <?= $d['judul'] ?>
+            </h3>
+
+            <p class="text-sm text-gray-600 mt-1">
                 <?= $d['pesan'] ?>
             </p>
         </div>
 
+        <!-- STATUS -->
         <?php if($d['status'] == 'aktif'): ?>
             <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full">
                 Aktif
@@ -146,6 +190,27 @@ if(isset($_POST['kirim'])){
             <span class="bg-red-100 text-red-600 text-xs px-3 py-1 rounded-full">
                 Dihapus
             </span>
+        <?php endif; ?>
+
+    </div>
+
+    <!-- ACTION -->
+    <div class="flex justify-end mt-4">
+
+        <?php if($d['status'] == 'aktif'): ?>
+
+        <a href="index.php?menu=notifikasi&hapus=<?= $d['id_notifikasi'] ?>"
+        class="bg-red-100 text-red-600 px-3 py-1 rounded text-xs">
+        Hapus
+        </a>
+
+        <?php else: ?>
+
+        <a href="index.php?menu=notifikasi&restore=<?= $d['id_notifikasi'] ?>"
+        class="bg-blue-100 text-blue-600 px-3 py-1 rounded text-xs">
+        Restore
+        </a>
+
         <?php endif; ?>
 
     </div>
@@ -161,7 +226,7 @@ if(isset($_POST['kirim'])){
 
 <?php for($i = 1; $i <= $total_page; $i++): ?>
 
-<a href="index.php?menu=notifikasi&page=<?= $i ?>&cari=<?= urlencode($cari) ?>"
+<a href="index.php?menu=notifikasi&page=<?= $i ?>&cari=<?= urlencode($cari) ?>&status=<?= $status_filter ?>"
    class="px-3 py-1 border rounded 
    <?= ($i == $page) ? 'bg-blue-500 text-white' : '' ?>">
    <?= $i ?>
@@ -181,4 +246,5 @@ if(isset($_POST['kirim'])){
 
 </div>
 
+</div>
 </div>

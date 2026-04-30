@@ -44,7 +44,7 @@ break;
 case "laporan":
 
     if($role == "admin"){
-        include "admin/laporan.php";
+        include "admin/kelola_laporan.php";
     }
     else if($role == "dosen" || $role == "mahasiswa"){
         require_once "pages/laporan.php";
@@ -99,23 +99,30 @@ break;
 
 case "kelola_laporan":
     if($role == "admin"){
-        include "admin/laporan.php";
+        include "admin/kelola_laporan.php";
     } else {
         echo "<div class='text-red-500'>Akses ditolak</div>";
     }
 break;
 
 case "notifikasi":
-case "notifikasi_user":
     if($role == "admin"){
-        include "admin/notifikasi.php";
+        include "admin/kelola_notifikasi.php";
+    } else {
+        echo "<div class='text-red-500'>Akses ditolak</div>";
     }
-    else if($role == "dosen" || $role == "mahasiswa"){
-        require_once "pages/notifikasi_user.php";
+break;
+
+case "notifikasi_user":
+    if($role == "dosen" || $role == "mahasiswa"){
+        include "pages/notifikasi_user.php";
+    } else {
+        echo "<div class='text-red-500'>Akses ditolak</div>";
     }
-    else{
-        echo "<div class='alert alert-danger'>Akses ditolak</div>";
-    }
+break;
+
+case "detail_notif":
+    include "pages/detail_notif.php";
 break;
 
 case "tambah_jadwal":
@@ -289,7 +296,14 @@ break;
 /* ================= DEFAULT ================= */
 
 default:
-include "pages/home.php";
+
+if($role == "admin"){
+    include "admin/dashboard.php";
+}
+else{
+    include "pages/home.php";
+}
+
 break;
 
 }

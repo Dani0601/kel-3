@@ -74,91 +74,95 @@ Filter
 </form>
 
 <!-- TABLE -->
-<div class="bg-white shadow rounded overflow-hidden">
+<!-- TABLE -->
+<div class="bg-white rounded-2xl shadow overflow-hidden">
 
-<table class="w-full text-sm">
+    <div class="p-4 border-b">
+        <h3 class="font-semibold text-gray-700">Data Mata Kuliah</h3>
+    </div>
 
-<thead class="bg-gray-100">
-<tr>
-<th class="p-3">Kode</th>
-<th class="p-3">Nama</th>
-<th class="p-3">SKS</th>
-<th class="p-3">Relasi</th>
-<th class="p-3 text-center">Aksi</th>
-</tr>
-</thead>
+    <div class="overflow-x-auto">
+    <table class="min-w-full text-sm">
 
-<tbody>
+        <thead class="bg-gray-100 text-xs uppercase text-gray-600">
+        <tr>
+            <th class="px-4 py-3 text-left">Kode</th>
+            <th class="px-4 py-3 text-left">Nama</th>
+            <th class="px-4 py-3 text-left">SKS</th>
+            <th class="px-4 py-3 text-left">Relasi</th>
+            <th class="px-4 py-3 text-center">Aksi</th>
+        </tr>
+        </thead>
 
-<?php if(mysqli_num_rows($data)>0){ ?>
-<?php while($d = mysqli_fetch_assoc($data)){ ?>
+        <tbody class="divide-y text-gray-700">
 
-<tr class="border-b align-top">
+        <?php if(mysqli_num_rows($data)>0){ ?>
+        <?php while($d = mysqli_fetch_assoc($data)){ ?>
 
-<td class="p-3"><?= $d['kode_mk'] ?></td>
-<td class="p-3"><?= $d['nama_mk'] ?></td>
-<td class="p-3"><?= $d['sks'] ?></td>
+        <tr class="hover:bg-gray-50 transition">
 
-<td class="p-3">
+            <td class="px-4 py-3"><?= $d['kode_mk'] ?></td>
+            <td class="px-4 py-3 font-medium"><?= $d['nama_mk'] ?></td>
+            <td class="px-4 py-3"><?= $d['sks'] ?></td>
 
-<?php
-$relasi = mysqli_query($conn,"
-    SELECT p.nama_prodi, mp.semester
-    FROM mk_prodi mp
-    JOIN prodi p ON mp.id_prodi = p.id_prodi
-    WHERE mp.id_mk='".$d['id_mk']."'
-");
-?>
+            <td class="px-4 py-3 flex flex-wrap gap-1">
 
-<?php if(mysqli_num_rows($relasi)>0){ ?>
-<?php while($r = mysqli_fetch_assoc($relasi)){ ?>
+                <?php
+                $relasi = mysqli_query($conn,"
+                    SELECT p.nama_prodi, mp.semester
+                    FROM mk_prodi mp
+                    JOIN prodi p ON mp.id_prodi = p.id_prodi
+                    WHERE mp.id_mk='".$d['id_mk']."'
+                ");
+                ?>
 
-<div class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded mb-1 inline-block">
-<?= $r['nama_prodi'] ?> (S<?= $r['semester'] ?>)
+                <?php if(mysqli_num_rows($relasi)>0){ ?>
+                    <?php while($r = mysqli_fetch_assoc($relasi)){ ?>
+                        <span class="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-600">
+                            <?= $r['nama_prodi'] ?> (S<?= $r['semester'] ?>)
+                        </span>
+                    <?php } ?>
+                <?php } else { ?>
+                    <span class="text-gray-400 text-xs">Belum ada</span>
+                <?php } ?>
+
+            </td>
+
+            <td class="px-4 py-3 text-center">
+                <div class="flex justify-center gap-2">
+
+                    <a href="index.php?menu=edit_mata_kuliah&id=<?= $d['id_mk'] ?>"
+                    class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded text-xs hover:bg-yellow-200 transition">
+                        Edit
+                    </a>
+
+                    <a href="index.php?menu=hapus_mata_kuliah&id=<?= $d['id_mk'] ?>"
+                    onclick="return confirm('Hapus MK beserta relasi?')"
+                    class="bg-red-100 text-red-600 px-3 py-1 rounded text-xs hover:bg-red-200 transition">
+                        Hapus
+                    </a>
+
+                </div>
+            </td>
+
+        </tr>
+
+        <?php } ?>
+        <?php } else { ?>
+
+        <tr>
+            <td colspan="5" class="text-center py-6 text-gray-400">
+                Tidak ada data
+            </td>
+        </tr>
+
+        <?php } ?>
+
+        </tbody>
+    </table>
+    </div>
+
 </div>
-
-<?php } ?>
-<?php } else { ?>
-
-<span class="text-gray-400 text-xs">Belum ada</span>
-
-<?php } ?>
-
-</td>
-
-<td class="p-3 text-center">
-
-<a href="index.php?menu=edit_mata_kuliah&id=<?= $d['id_mk'] ?>">
-Edit
-</a> |
-
-<a href="index.php?menu=hapus_mata_kuliah&id=<?= $d['id_mk'] ?>"
-onclick="return confirm('Hapus MK beserta relasi?')"
-class="text-red-500">
-Hapus
-</a>
-
-</td>
-
-</tr>
-
-<?php } ?>
-<?php } else { ?>
-
-<tr>
-<td colspan="5" class="text-center p-4 text-gray-400">
-Tidak ada data
-</td>
-</tr>
-
-<?php } ?>
-
-</tbody>
-
-</table>
-
-</div>
-
 <!-- PAGINATION -->
 <div class="flex justify-center mt-4 gap-2">
 <?php for($i=1;$i<=$total_page;$i++){ ?>
