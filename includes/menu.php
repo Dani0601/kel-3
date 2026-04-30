@@ -294,6 +294,21 @@ case "tambah_laporan":
     }
 break;
 
+case "riwayat_laporan":
+    if($role == "mahasiswa" || $role == "dosen"){
+        include "pages/riwayat_laporan.php";
+    } else {
+        echo "<div class='text-red-500'>Akses ditolak</div>";
+    }
+break;
+
+case "edit_laporan_user":
+    if($role == "mahasiswa" || $role == "dosen"){
+        include "pages/edit_laporan_user.php";
+    } else {
+        echo "<div class='text-red-500'>Akses ditolak</div>";
+    }
+break;
 
 /* ================= DEFAULT ================= */
 

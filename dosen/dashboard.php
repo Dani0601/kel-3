@@ -136,57 +136,6 @@ Dashboard Dosen 👋
 </div>
 
 <!-- ====================== -->
-<!-- RIWAYAT LAPORAN -->
-<!-- ====================== -->
-<div class="bg-white p-6 rounded-xl shadow">
-
-<h3 class="text-lg font-semibold mb-4">📜 Riwayat Laporan</h3>
-
-<?php
-$list = $conn->query("
-SELECT * FROM laporan_fasilitas
-WHERE id_user='$id_user'
-ORDER BY tanggal DESC
-");
-?>
-
-<?php if($list->num_rows > 0){ ?>
-
-    <?php while($d = $list->fetch_assoc()){ ?>
-
-    <div class="border-b py-3 flex justify-between">
-
-        <div>
-            <p class="font-semibold"><?= $d['judul'] ?></p>
-            <p class="text-sm text-gray-500">
-                <?= $d['tanggal'] ?>
-            </p>
-        </div>
-
-        <div>
-            <span class="
-            px-3 py-1 rounded-full text-sm
-            <?= $d['status']=='pending'?'bg-yellow-100 text-yellow-600':'' ?>
-            <?= $d['status']=='proses'?'bg-blue-100 text-blue-600':'' ?>
-            <?= $d['status']=='selesai'?'bg-green-100 text-green-600':'' ?>
-            ">
-            <?= $d['status'] ?>
-            </span>
-        </div>
-
-    </div>
-
-    <?php } ?>
-
-<?php } else { ?>
-
-<p class="text-gray-500">Belum ada laporan</p>
-
-<?php } ?>
-
-</div>
-
-<!-- ====================== -->
 <!-- JADWAL -->
 <!-- ====================== -->
 <div class="bg-white shadow-lg rounded-xl p-6">

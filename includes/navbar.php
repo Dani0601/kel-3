@@ -92,10 +92,27 @@ Kontak
 </div>
 </div>
 
-<a href="index.php?menu=laporan"
+<!-- LAPORAN -->
+<div class="relative" x-data="{dropdown:false}">
+<button @click="dropdown=!dropdown"
 class="text-gray-700 hover:text-blue-600 font-medium transition">
 Laporan
+</button>
+
+<div x-show="dropdown" @click.outside="dropdown=false"
+x-transition
+class="absolute bg-white shadow-lg rounded-xl mt-2 w-52 overflow-hidden">
+
+<a href="index.php?menu=laporan" class="block px-4 py-2 hover:bg-gray-100">
+Tambah Laporan
 </a>
+
+<a href="index.php?menu=riwayat_laporan" class="block px-4 py-2 hover:bg-gray-100">
+Riwayat Laporan
+</a>
+
+</div>
+</div>
 
 <?php if($role == "admin"){ ?>
 <a href="index.php?menu=dashboard_admin"
@@ -155,7 +172,7 @@ x-transition
 class="absolute right-0 bg-white shadow-lg rounded-xl mt-2 w-40 overflow-hidden">
 
 <a href="auth/logout.php"
-onclick="return confirm('Yakin ingin logout?')"
+onclick="openLogoutModal(); return false;"
 class="block px-4 py-2 text-red-500 hover:bg-gray-100">
 Logout
 </a>
@@ -198,9 +215,30 @@ Info Ruangan
 Pengumuman
 </a>
 
-<a href="index.php?menu=laporan" class="block py-2 text-gray-700">
+<div class="relative" x-data="{dropdown:false}">
+
+<button @click="dropdown=!dropdown"
+class="text-gray-700 hover:text-blue-600 font-medium transition">
 Laporan
+</button>
+
+<div x-show="dropdown" @click.outside="dropdown=false"
+x-transition
+class="absolute bg-white shadow-lg rounded-xl mt-2 w-52 overflow-hidden">
+
+<a href="index.php?menu=laporan"
+class="block px-4 py-2 hover:bg-gray-100">
+Tambah Laporan
 </a>
+
+<a href="index.php?menu=riwayat_laporan"
+class="block px-4 py-2 hover:bg-gray-100">
+Riwayat Laporan
+</a>
+
+</div>
+
+</div>
 
 <a href="index.php?menu=notifikasi_user" class="block py-2 text-gray-700">
 Notifikasi
@@ -244,3 +282,42 @@ Lihat sekarang
 </script>
 
 </nav>
+
+<!-- MODAL LOGOUT -->
+<div id="modalLogout"
+class="fixed inset-0 backdrop-blur-sm bg-black/40 hidden items-center justify-center z-50">
+
+    <div class="bg-white rounded-2xl shadow-xl p-6 w-80 text-center">
+        
+        <h2 class="text-lg font-semibold mb-2">Logout dari sistem?</h2>
+        <p class="text-gray-500 text-sm mb-4">
+            Anda akan keluar dari akun ini
+        </p>
+
+        <div class="flex justify-center gap-3">
+            <button onclick="closeLogoutModal()"
+                class="px-4 py-2 rounded-lg bg-gray-200">
+                Batal
+            </button>
+
+            <a href="auth/logout.php"
+               class="px-4 py-2 rounded-lg bg-red-500 text-white">
+               Ya, Logout
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<script>
+function openLogoutModal(){
+    const modal = document.getElementById('modalLogout');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+function closeLogoutModal(){
+    const modal = document.getElementById('modalLogout');
+    modal.classList.add('hidden');
+}
+</script>

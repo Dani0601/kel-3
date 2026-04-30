@@ -7,13 +7,13 @@ $role = $_SESSION['role'] ?? '';
 
     <!-- 🔵 LOGO -->
     <div class="p-4 flex items-center gap-3 text-blue-600 border-b">
-    <img src="assets/img/logo_biruuu.png" class="w-12">
-    
-    <div>
-        <div class="text-2xl font-bold">RuKo</div>
-        <p class="text-sm text-gray-500">Ruang Kosong</p>
+        <img src="assets/img/logo_biruuu.png" class="w-12">
+        
+        <div>
+            <div class="text-2xl font-bold">RuKo</div>
+            <p class="text-sm text-gray-500">Ruang Kosong</p>
+        </div>
     </div>
-</div>
 
     <!-- 🔹 MENU -->
     <nav class="flex-1 p-4 space-y-2 text-sm">
@@ -98,8 +98,8 @@ $role = $_SESSION['role'] ?? '';
     <!-- 🔻 LOGOUT -->
     <div class="p-4 border-t">
 
-        <a href="auth/logout.php"
-        onclick="return confirm('Yakin ingin logout?')"
+        <a href="#"
+        onclick="openLogoutModal()"
         class="block text-center bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition">
         Logout
         </a>
@@ -107,3 +107,82 @@ $role = $_SESSION['role'] ?? '';
     </div>
 
 </div>
+
+<!-- ================= MODAL LOGOUT ================= -->
+<div id="modalLogout"
+class="fixed inset-0 backdrop-blur-sm bg-black/40 hidden items-center justify-center z-50">
+
+    <div class="bg-white rounded-2xl shadow-xl p-6 w-80 text-center animate-fadeScale">
+        
+        <!-- ICON -->
+        <div class="mb-3">
+            <div class="w-12 h-12 mx-auto flex items-center justify-center bg-red-100 text-red-500 rounded-full text-xl">
+                ⚠
+            </div>
+        </div>
+
+        <h2 class="text-lg font-semibold mb-1">Logout dari sistem?</h2>
+        <p class="text-gray-500 text-sm mb-4">
+            Anda akan keluar dari akun ini
+        </p>
+
+        <div class="flex justify-center gap-3">
+            <button onclick="closeLogoutModal()"
+                class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition">
+                Batal
+            </button>
+
+            <a href="auth/logout.php"
+               class="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition">
+               Ya, Logout
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<!-- ================= SCRIPT ================= -->
+<script>
+function openLogoutModal(){
+    const modal = document.getElementById('modalLogout');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+function closeLogoutModal(){
+    const modal = document.getElementById('modalLogout');
+    modal.classList.add('hidden');
+}
+
+/* klik luar modal */
+window.addEventListener('click', function(e){
+    const modal = document.getElementById('modalLogout');
+    if(e.target === modal){
+        closeLogoutModal();
+    }
+});
+
+/* tekan ESC */
+document.addEventListener('keydown', function(e){
+    if(e.key === "Escape"){
+        closeLogoutModal();
+    }
+});
+</script>
+
+<!-- ================= ANIMASI ================= -->
+<style>
+@keyframes fadeScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+.animate-fadeScale {
+    animation: fadeScale 0.25s ease;
+}
+</style>
