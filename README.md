@@ -56,17 +56,17 @@ Maintenance - Scalability - Team collaboration
 
 <p align="center"><b>👨‍💼 Admin</b></p>
 <p align="center">
-  <img src="assets/img/dashboardadmin.png" width="80%">
+  <img src="../assets/img/dashboardadmin.png" width="80%">
 </p>
 
 <p align="center"><b>👨‍🏫 Dosen</b></p>
 <p align="center">
-  <img src="assets/img/dashboarddosen.png" width="80%">
+  <img src="../assets/img/dashboarddosen.png" width="80%">
 </p>
 
 <p align="center"><b>🎓 Mahasiswa</b></p>
 <p align="center">
-  <img src="assets/img/dashboardmhs.png" width="80%">
+  <img src="../assets/img/dashboardmhs.png" width="80%">
 </p>
 
 ### 🔐 Login Page
